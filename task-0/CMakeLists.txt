@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.29)
-project(23202_bliznyuk_OOP_CPP)
+project(task_0)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(23202_bliznyuk_OOP_CPP word-stats.cpp)
+add_executable(task_0 word-stats.cpp)
+add_subdirectory(Googletests)
