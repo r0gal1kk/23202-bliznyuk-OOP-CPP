@@ -1,6 +1,0 @@
-project(Googletests)
-add_subdirectory(googletest)
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-add_executable(Google_Tests_run StatisticTest.cpp)
-target_link_libraries(Google_Tests_run ${CMAKE_PROJECT_NAME}_googletest)
-target_link_libraries(Google_Tests_run gtest gtest_main)
