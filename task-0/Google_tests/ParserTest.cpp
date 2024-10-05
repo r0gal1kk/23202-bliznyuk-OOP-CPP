@@ -5,24 +5,24 @@ TEST(ParserTest, TestGetSplittedString) {
     Parser parser;
 
     std::string input = "Hello World!";
-    std::vector<std::string> result = parser.getSplittedString(input);
+    std::vector<std::string> result = parser.parse(input);
     EXPECT_EQ(result.size(), 2);
     EXPECT_EQ(result[0], "hello");
     EXPECT_EQ(result[1], "world");
 
     input = "Test 123, test.";
-    result = parser.getSplittedString(input);
+    result = parser.parse(input);
     EXPECT_EQ(result.size(), 3);
     EXPECT_EQ(result[0], "test");
     EXPECT_EQ(result[1], "123");
     EXPECT_EQ(result[2], "test");
 
     input = "";
-    result = parser.getSplittedString(input);
+    result = parser.parse(input);
     EXPECT_TRUE(result.empty());
 
     input = "    Leading and trailing spaces    ";
-    result = parser.getSplittedString(input);
+    result = parser.parse(input);
     EXPECT_EQ(result.size(), 4);
     EXPECT_EQ(result[0], "leading");
     EXPECT_EQ(result[1], "and");
@@ -34,7 +34,7 @@ TEST(ParserTest, TestGetSplittedStringWithPunctuation) {
     Parser parser;
 
     std::string input = "Hello, player1! How is it going?";
-    std::vector<std::string> result = parser.getSplittedString(input);
+    std::vector<std::string> result = parser.parse(input);
     EXPECT_EQ(result.size(), 6);
     EXPECT_EQ(result[0], "hello");
     EXPECT_EQ(result[1], "player1");

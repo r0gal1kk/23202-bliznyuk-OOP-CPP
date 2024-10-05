@@ -1,44 +1,40 @@
 #include <gtest/gtest.h>
 #include "Statistic.h"
 
-TEST(StatisticTest, TestPushWord) {
+TEST(StatisticTest, TestPush) {
     Statistic statistic;
-    statistic.pushWord("test");
-    statistic.pushWord("example");
-    statistic.pushWord("test");
+    statistic.push("test");
+    statistic.push("example");
+    statistic.push("test");
 
     EXPECT_EQ(statistic.getWordsTotal(), 3);
 }
 
-TEST(StatisticTest, TestPushWordsVector) {
+TEST(StatisticTest, TestPushVector) {
     Statistic statistic;
-    statistic.pushWord("test");
-    statistic.pushWord("example");
+    statistic.push("test");
+    statistic.push("example");
 
     std::vector<std::string> words = {"another", "test", "example", "test"};
-    statistic.pushWordsVector(words);
+    statistic.pushVector(words);
 
-    EXPECT_DOUBLE_EQ(statistic.getFreqency("test"), 50.0);
+    EXPECT_DOUBLE_EQ(statistic.getPercentage("test"), 50.0);
     EXPECT_EQ(statistic.getWordsTotal(), 6);
 }
 
-TEST(StatisticTest, TestGetSortedStatistic) {
+TEST(StatisticTest, TestGetStats) {
     Statistic statistic;
-    statistic.pushWord("test");
-    statistic.pushWord("example");
-    statistic.pushWord("test");
+    statistic.push("test");
+    statistic.push("example");
+    statistic.push("test");
+    std::string stats = statistic.getStats();
 
-    auto sortedStatistic = statistic.getSortedStatistic();
-
-    EXPECT_EQ(sortedStatistic[0].first, "test");
-    EXPECT_EQ(sortedStatistic[0].second, 2);
-    EXPECT_EQ(sortedStatistic[1].first, "example");
-    EXPECT_EQ(sortedStatistic[1].second, 1);
+    EXPECT_EQ(stats, "Word,Frequency,Percentage\ntest,2,66.666667%\nexample,1,33.333333%\n");
 }
 
-TEST(StatisticTest, TestGetFrequencyNonExistentWord) {
+TEST(StatisticTest, TestGetPercentageNonExistentWord) {
     Statistic statistic;
-    statistic.pushWord("test");
+    statistic.push("test");
 
-    EXPECT_EQ(statistic.getFreqency("nonexistent"), 0);
+    EXPECT_EQ(statistic.getPercentage("nonexistent"), 0);
 }

@@ -9,7 +9,7 @@ private:
     void toLowerString(std::string& line);
     void splitIntoWords(const std::string& line, std::vector<std::string>& splittedString);
 public:
-    std::vector<std::string> getSplittedString(std::string& line);
+    std::vector<std::string> parse(std::string& line);
 };
 
 #endif //PARSER_H

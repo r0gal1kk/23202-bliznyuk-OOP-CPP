@@ -15,7 +15,7 @@ public:
     ~FileWriter();
     void open();
     void close();
-    void writeStatisticToCSV(const std::vector<std::pair<std::string, int>>& statisticVector, const unsigned long long& wordsTotal);
+    void write(const std::string& str);
 };
 
 #endif //FILEWRITER_H

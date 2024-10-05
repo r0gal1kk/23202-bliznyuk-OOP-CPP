@@ -18,16 +18,15 @@ int main(int argc, char* argv[]) {
 
     while (reader.hasNext()) {
         std::string currentLine = reader.getNextString();
-        std::vector<std::string> splittedString = parser.getSplittedString(currentLine);
-        statistic.pushWordsVector(splittedString);
+        std::vector<std::string> parsedString = parser.parse(currentLine);
+        statistic.pushVector(parsedString);
     }
 
     reader.close();
 
     FileWriter writer(argv[2]);
     writer.open();
-    std::vector<std::pair<std::string, int>> statisticVector = statistic.getSortedStatistic();
-    writer.writeStatisticToCSV(statisticVector, statistic.getWordsTotal());
+    writer.write(statistic.getStats());
     writer.close();
 
     return 0;

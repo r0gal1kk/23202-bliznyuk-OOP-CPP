@@ -18,11 +18,8 @@ void FileWriter::close() {
     }
 }
 
-void FileWriter::writeStatisticToCSV(const std::vector<std::pair<std::string, int>>& statisticVector, const unsigned long long& wordsTotal) {
+void FileWriter::write(const std::string& str) {
     if (output.is_open()) {
-        for (const auto& element : statisticVector) {
-            double frequency = static_cast<double>(element.second) / wordsTotal * 100;
-            output << element.first << '\t' << element.second << '\t' << frequency << '%' << '\n';
-        }
+        output.write(str.c_str(), str.length());
     }
 }

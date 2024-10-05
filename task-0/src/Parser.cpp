@@ -25,7 +25,7 @@ void Parser::splitIntoWords(const std::string& line, std::vector<std::string>& s
     }
 }
 
-std::vector<std::string> Parser::getSplittedString(std::string& line) {
+std::vector<std::string> Parser::parse(std::string& line) {
     std::vector<std::string> splittedString;
     toLowerString(line);
     splitIntoWords(line, splittedString);
