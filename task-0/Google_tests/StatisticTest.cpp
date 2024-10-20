@@ -27,9 +27,11 @@ TEST(StatisticTest, TestGetStats) {
     statistic.push("test");
     statistic.push("example");
     statistic.push("test");
-    std::string stats = statistic.getStats();
+    std::vector<std::string> stats = statistic.getStats();
 
-    EXPECT_EQ(stats, "Word,Frequency,Percentage\ntest,2,66.666667%\nexample,1,33.333333%\n");
+    EXPECT_EQ(stats[0], "Word,Frequency,Percentage\n");
+    EXPECT_EQ(stats[1], "test,2,66.666667%\n");
+    EXPECT_EQ(stats[2], "example,1,33.333333%\n");
 }
 
 TEST(StatisticTest, TestGetPercentageNonExistentWord) {

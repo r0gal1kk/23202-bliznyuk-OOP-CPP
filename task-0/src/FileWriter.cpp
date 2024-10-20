@@ -18,8 +18,8 @@ void FileWriter::close() {
     }
 }
 
-void FileWriter::write(const std::string& str) {
-    if (output.is_open()) {
-        output.write(str.c_str(), str.length());
+void FileWriter::write(const std::vector<std::string> &stats) {
+    for (auto element : stats) {
+        output << element;
     }
 }

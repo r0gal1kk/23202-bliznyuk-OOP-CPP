@@ -12,9 +12,10 @@ TEST(FileWriterTest, TestWriteToFile) {
     FileWriter fileWriter(testFileName);
     fileWriter.open();
 
-    std::string str = "word1,2,40%\nword2,3,60%\n";
-    unsigned long long wordsTotal = 5;
-    fileWriter.write(str);
+    std::vector <std::string> words(2);
+    words[0] = "word1,2,40%\n";
+    words[1] = "word2,3,60%\n";
+    fileWriter.write(words);
     fileWriter.close();
 
     // Проверяем, что файл был создан и содержит ожидаемые данные
@@ -54,9 +55,10 @@ TEST(FileWriterTest, TestWriteToFileWithoutOpening) {
 
     // Удаляем файл, если он существует
     remove(testFileName.c_str());
-
+    std::vector <std::string> words(1);
+    words[0] = "word";
     FileWriter fileWriter(testFileName);
-    EXPECT_NO_THROW(fileWriter.write("word")); // Запись без открытия не должна вызывать исключение
+    EXPECT_NO_THROW(fileWriter.write(words)); // Запись без открытия не должна вызывать исключение
 
     // Удаление тестового файла после проверки
     remove(testFileName.c_str());

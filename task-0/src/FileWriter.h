@@ -15,7 +15,7 @@ public:
     ~FileWriter();
     void open();
     void close();
-    void write(const std::string& str);
+    void write(const std::vector<std::string> &stats);
 };
 
 #endif //FILEWRITER_H
