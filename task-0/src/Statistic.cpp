@@ -22,20 +22,10 @@ double Statistic::getPercentage(const std::string& word) {
     return (static_cast<double>(wordsMap[word]) / wordsTotal) * PERCENT;
 }
 
-std::vector<std::string> Statistic::convertToVector(const std::vector<std::pair<std::string, int> > &statisticVector) {
-    std::vector<std::string> result(statisticVector.size() + 1);
-    result[0] = "Word,Frequency,Percentage\n";
-    int index = 1;
-    for (auto element : statisticVector) {
-        result[index++] = element.first + ',' + std::to_string(element.second) + ',' + std::to_string(getPercentage(element.first)) + "%\n";
-    }
-    return result;
-}
-
-std::vector<std::string> Statistic::getStats() {
+std::vector<std::pair<std::string, int>> Statistic::getStats() {
     std::vector<std::pair<std::string, int>> statisticVector(wordsMap.size());
     sortMapByValue(statisticVector);
-    return convertToVector(statisticVector);
+    return statisticVector;
 }
 
 unsigned long long Statistic::getWordsTotal() {
