@@ -3,7 +3,7 @@
 
 int main() {
     // Создание битового массива на 16 бит, инициализированного значением 5
-    BitArray a(16);
+    BitArray a(10, 5);
     a[5] = 1;
     std::cout << a.to_string() << std::endl;
      // Выводим строковое представление
@@ -22,8 +22,8 @@ int main() {
      std::cout << "After push_back(1): " << a.to_string() << std::endl;
 
      // Изменяем размер массива
-     a.resize(20, 1);
-     std::cout << "After resize to 20 (with value 1): " << a.to_string() << std::endl;
+     a.resize(20, 0);
+     std::cout << "After resize to 20 (with value 0): " << a.to_string() << std::endl;
 
      // Создаем еще один битовый массив
      BitArray b(20); // 00000011

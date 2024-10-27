@@ -1,7 +1,6 @@
 #ifndef BITARRAY_H
 #define BITARRAY_H
 
-#include <vector>
 #include <string>
 #include <stdexcept>
 #include <algorithm>
@@ -10,13 +9,15 @@ class BitArray {
 private:
     const unsigned char MAX_BYTE = 255;
     const int BITS_IN_BYTE = 8;
-    std::vector<unsigned char> bits;
+    unsigned char *bits;
     int num_bits;
+    int num_bytes;
 
     void shift_left(const int& n);
     void shift_right(const int& n);
     std::string byte_to_string(unsigned char byte) const;
     void clear_extra_bits();
+    void set(int n, bool val = true);
 
 public:
     class BitRef {
@@ -33,7 +34,7 @@ public:
     BitArray();
     explicit BitArray(int num_bits, long value = 0);
     BitArray(const BitArray& b);
-    ~BitArray() = default;
+    ~BitArray();
 
     void swap(BitArray& b);
     BitArray& operator=(const BitArray& b);
