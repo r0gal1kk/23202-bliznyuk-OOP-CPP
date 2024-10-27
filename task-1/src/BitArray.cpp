@@ -36,6 +36,10 @@ BitArray::BitRef& BitArray::BitRef::operator=(const unsigned char value) {
     return *this;
 }
 
+BitArray::BitRef::operator bool() const {
+    return (byte & (1 << (7 - bit_position))) ? true : false;
+}
+
 BitArray::BitRef BitArray::operator[](int i) {
     if (i < 0 || i >= num_bits) {
         throw std::out_of_range("BitArray::BitRef::operator[]");
@@ -137,6 +141,9 @@ void BitArray::resize(const int num_bits, const unsigned char value) {
     if (value != 0 && value != 1) {
         throw std::invalid_argument("Value must be 0 or 1");
     }
+    if (num_bits < 0) {
+        throw std::invalid_argument("BitArray::resize");
+    }
 
     if (num_bits > this->num_bits && value) {
         bits[num_bytes - 1] |= MAX_BYTE >> (this->num_bits % BITS_IN_BYTE);
@@ -162,6 +169,9 @@ void BitArray::resize(const int num_bits, const unsigned char value) {
 }
 
 void BitArray::clear() {
+    if (bits == nullptr) {
+        return;
+    }
     delete[] bits;
     bits = nullptr;
     num_bytes = 0;
@@ -211,7 +221,7 @@ BitArray& BitArray::operator^=(const BitArray& b) {
 
 BitArray& BitArray::operator<<=(int n) {
     if (n < 0) {
-        throw std::invalid_argument("Negative number of bits");
+        throw std::invalid_argument("Negative shift. Use operator>>= instead.");
     }
     if (n == 0) {
         return *this;
@@ -222,7 +232,7 @@ BitArray& BitArray::operator<<=(int n) {
 
 BitArray& BitArray::operator>>=(int n) {
     if (n < 0) {
-        throw std::invalid_argument("Negative number of bits");
+        throw std::invalid_argument("Negative shift. Use operator<<= instead.");
     }
     if (n == 0) {
         return *this;
@@ -232,12 +242,18 @@ BitArray& BitArray::operator>>=(int n) {
 }
 
 BitArray BitArray::operator<<(const int n) const {
+    if (n < 0) {
+        throw std::invalid_argument("Negative shift. Use operator>> instead.");
+    }
     BitArray result(*this);
     result <<= n;
     return result;
 }
 
 BitArray BitArray::operator>>(const int n) const {
+    if (n < 0) {
+        throw std::invalid_argument("Negative shift. Use operator<< instead.");
+    }
     BitArray result(*this);
     result >>= n;
     return result;
@@ -259,6 +275,9 @@ BitArray& BitArray::reset() {
 }
 
 bool BitArray::any() const {
+    if (bits == nullptr) {
+        return false;
+    }
     for (int i = 0; i < num_bytes; i++) {
         if (bits[i] != 0) {
             return true;
@@ -268,6 +287,9 @@ bool BitArray::any() const {
 }
 
 bool BitArray::none() const {
+    if (bits == nullptr) {
+        return true;
+    }
     for (int i = 0; i < num_bytes; i++) {
         if (bits[i] != 0) {
             return false;
@@ -298,7 +320,7 @@ int BitArray::count() const {
 }
 
 bool BitArray::operator[](int i) const {
-    if (i < 0 || i >= num_bytes) {
+    if (i < 0 || i >= num_bits) {
         throw std::out_of_range("Index out of range");
     }
     return bits[i / BITS_IN_BYTE] & (1 << (7 - (i % BITS_IN_BYTE)));
@@ -319,6 +341,55 @@ std::string BitArray::to_string() const {
     }
     if (num_bits % BITS_IN_BYTE != 0) {
         result.erase(num_bytes * BITS_IN_BYTE - (BITS_IN_BYTE - (num_bits % BITS_IN_BYTE)), BITS_IN_BYTE - (num_bits % BITS_IN_BYTE));
+    }
+    return result;
+}
+
+bool operator==(const BitArray & a, const BitArray & b) {
+    if (a.size() != b.size()) {
+        return false;
+    }
+    for (int i = 0; i < a.size(); ++i) {
+        if (a[i] != b[i]) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool operator!=(const BitArray & a, const BitArray & b) {
+    return !(a == b);
+}
+
+BitArray operator&(const BitArray& b1, const BitArray& b2) {
+    if (b1.size() != b2.size()) {
+        throw std::invalid_argument("BitArrays must be of the same size");
+    }
+    BitArray result(b1.size());
+    for (int i = 0; i < b1.size(); ++i) {
+        result[i] = b1[i] & b2[i];
+    }
+    return result;
+}
+
+BitArray operator|(const BitArray& b1, const BitArray& b2) {
+    if (b1.size() != b2.size()) {
+        throw std::invalid_argument("BitArrays must be of the same size");
+    }
+    BitArray result(b1.size());
+    for (int i = 0; i < b1.size(); ++i) {
+        result[i] = b1[i] | b2[i];
+    }
+    return result;
+}
+
+BitArray operator^(const BitArray& b1, const BitArray& b2) {
+    if (b1.size() != b2.size()) {
+        throw std::invalid_argument("BitArrays must be of the same size");
+    }
+    BitArray result(b1.size());
+    for (int i = 0; i < b1.size(); ++i) {
+        result[i] = b1[i] ^ b2[i];
     }
     return result;
 }

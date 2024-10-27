@@ -28,6 +28,7 @@ public:
     public:
         BitRef(unsigned char& byte, int bit_position);
         BitRef& operator=(const unsigned char value);
+        operator bool() const;
     };
 
     BitRef operator[](int i);
@@ -59,6 +60,12 @@ public:
     int size() const;
     bool empty() const;
     std::string to_string() const;
+
+    friend bool operator==(const BitArray & a, const BitArray & b);
+    friend bool operator!=(const BitArray & a, const BitArray & b);
+    friend BitArray operator&(const BitArray& b1, const BitArray& b2);
+    friend BitArray operator|(const BitArray& b1, const BitArray& b2);
+    friend BitArray operator^(const BitArray& b1, const BitArray& b2);
 };
 
 #endif // BITARRAY_H
