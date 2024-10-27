@@ -1,5 +1,15 @@
 #include "BitArray.h"
 
+void BitArray::clear_extra_bits() {
+    if (num_bits % 8 == 0) {
+        return;
+    }
+    const int last_byte = bits.size() - 1;
+    const int valid_bits = num_bits % BITS_IN_BYTE;
+    const unsigned char mask = MAX_BYTE << (BITS_IN_BYTE - valid_bits);
+    bits[last_byte] &= mask;
+}
+
 BitArray::BitRef::BitRef(unsigned char& byte, int bit_position) : byte(byte), bit_position(bit_position) {}
 
 BitArray::BitRef& BitArray::BitRef::operator=(const unsigned char value) {
@@ -9,6 +19,12 @@ BitArray::BitRef& BitArray::BitRef::operator=(const unsigned char value) {
         byte &= ~(1 << (7 - bit_position));
     }
     return *this;
+}
+
+BitArray::BitRef BitArray::operator[](int i) {
+    const int byte_index = i / BITS_IN_BYTE;
+    const int bit_index = i % BITS_IN_BYTE;
+    return {bits[byte_index], bit_index};
 }
 
 BitArray::BitArray() : num_bits(0) {}
@@ -59,7 +75,7 @@ void BitArray::shift_right(const int& n) {
             bits[i] |= bits[i - 1] << (BITS_IN_BYTE - bit_shift);
         }
     }
-    bits[bits.size() - 1] &= MAX_BYTE << (BITS_IN_BYTE - (num_bits % BITS_IN_BYTE));
+    clear_extra_bits();
 }
 
 std::string BitArray::byte_to_string(unsigned char byte) const {
@@ -86,6 +102,9 @@ BitArray& BitArray::operator=(const BitArray& b) {
 void BitArray::resize(const int num_bits, const unsigned char value) {
     if (value != 0 && value != 1) {
         throw std::invalid_argument("Value must be 0 or 1");
+    }
+    if (num_bits > this->num_bits && value) {
+        bits[bits.size() - 1] |= MAX_BYTE >> (this->num_bits % BITS_IN_BYTE);
     }
     bits.resize(num_bits / BITS_IN_BYTE + (num_bits % BITS_IN_BYTE != 0 ? 1 : 0), value == 0 ? 0 : MAX_BYTE);
     bits[bits.size() - 1] &= MAX_BYTE << (num_bits % BITS_IN_BYTE);
@@ -175,7 +194,7 @@ BitArray& BitArray::set() {
     for (auto& byte : bits) {
         byte = MAX_BYTE;
     }
-    bits[bits.size() - 1] &= MAX_BYTE << (num_bits % BITS_IN_BYTE);
+    clear_extra_bits();
     return *this;
 }
 
@@ -209,6 +228,7 @@ BitArray BitArray::operator~() const {
     for (int i = 0; i < bits.size(); i++) {
         result.bits[i] = ~(this->bits[i]);
     }
+    result.clear_extra_bits();
     return result;
 }
 
@@ -249,4 +269,3 @@ std::string BitArray::to_string() const {
     }
     return result;
 }
-

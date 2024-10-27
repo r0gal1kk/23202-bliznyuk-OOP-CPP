@@ -16,6 +16,7 @@ private:
     void shift_left(const int& n);
     void shift_right(const int& n);
     std::string byte_to_string(unsigned char byte) const;
+    void clear_extra_bits();
 
 public:
     class BitRef {
