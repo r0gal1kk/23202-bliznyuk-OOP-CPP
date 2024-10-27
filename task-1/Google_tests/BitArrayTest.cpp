@@ -11,32 +11,32 @@ TEST(BitArrayTest, ConstructorWithValue) {
     BitArray bitArray1(9, 170);
     EXPECT_EQ(bitArray1.size(), 9);
     EXPECT_FALSE(bitArray1.empty());
-    EXPECT_EQ(bitArray1.to_string(), "010101010");
+    EXPECT_EQ(bitArray1.toString(), "010101010");
     BitArray bitArray2(8, 0);
     EXPECT_EQ(bitArray2.size(), 8);
-    EXPECT_EQ(bitArray2.to_string(), "00000000");
+    EXPECT_EQ(bitArray2.toString(), "00000000");
     BitArray bitArray3(20, 65535);
     EXPECT_EQ(bitArray3.size(), 20);
-    EXPECT_EQ(bitArray3.to_string(), "00001111111111111111");
+    EXPECT_EQ(bitArray3.toString(), "00001111111111111111");
 }
 
 TEST(BitArrayTest, CopyConstructor) {
     BitArray ba1(8, 204);
     BitArray ba2(ba1);
     EXPECT_EQ(ba2.size(), ba1.size());
-    EXPECT_EQ(ba2.to_string(), ba1.to_string());
+    EXPECT_EQ(ba2.toString(), ba1.toString());
     ba1[0] = 0; // Изменяем первый бит
-    EXPECT_NE(ba1.to_string(), ba2.to_string());
+    EXPECT_NE(ba1.toString(), ba2.toString());
 }
 
 TEST(BitArrayTest, Swap) {
     BitArray ba1(8, 170);
     BitArray ba2(8, 85);
-    EXPECT_EQ(ba1.to_string(), "10101010");
-    EXPECT_EQ(ba2.to_string(), "01010101");
+    EXPECT_EQ(ba1.toString(), "10101010");
+    EXPECT_EQ(ba2.toString(), "01010101");
     ba1.swap(ba2);
-    EXPECT_EQ(ba1.to_string(), "01010101");
-    EXPECT_EQ(ba2.to_string(), "10101010");
+    EXPECT_EQ(ba1.toString(), "01010101");
+    EXPECT_EQ(ba2.toString(), "10101010");
     EXPECT_EQ(ba1.size(), 8);
     EXPECT_EQ(ba2.size(), 8);
 }
@@ -44,11 +44,11 @@ TEST(BitArrayTest, Swap) {
 TEST(BitArrayTest, SwapWithEmpty) {
     BitArray ba1(8, 255);
     BitArray ba2;
-    EXPECT_EQ(ba1.to_string(), "11111111");
+    EXPECT_EQ(ba1.toString(), "11111111");
     EXPECT_TRUE(ba2.empty());
     ba1.swap(ba2);
     EXPECT_TRUE(ba1.empty());
-    EXPECT_EQ(ba2.to_string(), "11111111");
+    EXPECT_EQ(ba2.toString(), "11111111");
 }
 
 TEST(BitArrayTest, SwapWithBothEmpty) {
@@ -65,28 +65,28 @@ TEST(BitArrayTest, ResizeIncreasingSize) {
     BitArray ba(8, 170);
     ba.resize(16, 0);
     EXPECT_EQ(ba.size(), 16);
-    EXPECT_EQ(ba.to_string(), "1010101000000000");
+    EXPECT_EQ(ba.toString(), "1010101000000000");
 }
 
 TEST(BitArrayTest, ResizeIncreasingSizeWithOnes) {
     BitArray ba(7, 85);
     ba.resize(15, 1);
     EXPECT_EQ(ba.size(), 15);
-    EXPECT_EQ(ba.to_string(), "101010111111111");
+    EXPECT_EQ(ba.toString(), "101010111111111");
 }
 
 TEST(BitArrayTest, ResizeDecreasingSize) {
     BitArray ba(10, 255);
     ba.resize(8);
     EXPECT_EQ(ba.size(), 8);
-    EXPECT_EQ(ba.to_string(), "00111111");
+    EXPECT_EQ(ba.toString(), "00111111");
 }
 
 TEST(BitArrayTest, ResizeWithMixedData) {
     BitArray ba(10, 819);
     ba.resize(15, 1);
     EXPECT_EQ(ba.size(), 15);
-    EXPECT_EQ(ba.to_string(), "110011001111111");
+    EXPECT_EQ(ba.toString(), "110011001111111");
 }
 
 TEST(BitArrayTest, ResizeWithInvalidValue) {
@@ -99,14 +99,14 @@ TEST(BitArrayTest, ResizeToSmallerSize) {
     BitArray ba(8, 0b11111111);
     ba.resize(5);
     EXPECT_EQ(ba.size(), 5);
-    EXPECT_EQ(ba.to_string(), "11111");
+    EXPECT_EQ(ba.toString(), "11111");
 }
 
 TEST(BitArrayTest, ClearNonEmptyArray) {
     BitArray ba(8, 170);
     EXPECT_EQ(ba.size(), 8);
     EXPECT_FALSE(ba.empty());
-    EXPECT_EQ(ba.to_string(), "10101010");
+    EXPECT_EQ(ba.toString(), "10101010");
     ba.clear();
     EXPECT_EQ(ba.size(), 0);
     EXPECT_TRUE(ba.empty());
@@ -125,47 +125,47 @@ TEST(BitArrayTest, PushBackIntoEmptyArray) {
     BitArray ba;
     EXPECT_EQ(ba.size(), 0);
     EXPECT_TRUE(ba.empty());
-    ba.push_back(1);
+    ba.pushBack(1);
     EXPECT_EQ(ba.size(), 1);
-    EXPECT_EQ(ba.to_string(), "1");
+    EXPECT_EQ(ba.toString(), "1");
 }
 
 TEST(BitArrayTest, PushBackMultipleBits) {
     BitArray ba;
-    ba.push_back(1);
-    ba.push_back(0);
-    ba.push_back(1);
-    ba.push_back(1);
+    ba.pushBack(1);
+    ba.pushBack(0);
+    ba.pushBack(1);
+    ba.pushBack(1);
     EXPECT_EQ(ba.size(), 4);
-    EXPECT_EQ(ba.to_string(), "1011");
+    EXPECT_EQ(ba.toString(), "1011");
 }
 
 TEST(BitArrayTest, PushBackAndResize) {
     BitArray ba(8, 255);
-    ba.push_back(0);
+    ba.pushBack(0);
     EXPECT_EQ(ba.size(), 9);
-    EXPECT_EQ(ba.to_string(), "111111110");
+    EXPECT_EQ(ba.toString(), "111111110");
 }
 
 TEST(BitArrayTest, OperatorAndEqual) {
     BitArray ba1(10, 204);
     BitArray ba2(10, 170);
     ba1 &= ba2;
-    EXPECT_EQ(ba1.to_string(), "0010001000");
+    EXPECT_EQ(ba1.toString(), "0010001000");
 }
 
 TEST(BitArrayTest, OperatorOrEqual) {
     BitArray ba1(10, 204);
     BitArray ba2(10, 170);
     ba1 |= ba2;
-    EXPECT_EQ(ba1.to_string(), "0011101110");
+    EXPECT_EQ(ba1.toString(), "0011101110");
 }
 
 TEST(BitArrayTest, OperatorXorEqual) {
     BitArray ba1(10, 204);
     BitArray ba2(10, 170);
     ba1 ^= ba2;
-    EXPECT_EQ(ba1.to_string(), "0001100110");
+    EXPECT_EQ(ba1.toString(), "0001100110");
 }
 
 TEST(BitArrayTest, OperatorsWithDifferentSizes) {
@@ -180,44 +180,44 @@ TEST(BitArrayTest, OperatorLeftShiftEqual) {
     BitArray ba(15, 4545); // 001 0001 1100 0001
     ba <<= 3;
     EXPECT_EQ(ba.count(), 4);
-    EXPECT_EQ(ba.to_string(), "000111000001000");
+    EXPECT_EQ(ba.toString(), "000111000001000");
     ba <<= 40;
     EXPECT_EQ(ba.count(), 0);
-    EXPECT_EQ(ba.to_string(), "000000000000000");
+    EXPECT_EQ(ba.toString(), "000000000000000");
 }
 
 TEST(BitArrayTest, OperatorRightShiftEqual) {
     BitArray ba(15, 4545); // 001 0001 1100 0001
     ba >>= 4;
     EXPECT_EQ(ba.count(), 4);
-    EXPECT_EQ(ba.to_string(), "000000100011100");
+    EXPECT_EQ(ba.toString(), "000000100011100");
     ba >>= 40;
     EXPECT_EQ(ba.count(), 0);
-    EXPECT_EQ(ba.to_string(), "000000000000000");
+    EXPECT_EQ(ba.toString(), "000000000000000");
 }
 
 TEST(BitArrayTest, OperatorLeftShift) {
     BitArray ba(15, 4545);
     BitArray result = ba << 3;
     EXPECT_EQ(result.count(), 4);
-    EXPECT_EQ(result.to_string(), "000111000001000");
+    EXPECT_EQ(result.toString(), "000111000001000");
 }
 
 TEST(BitArrayTest, OperatorRightShift) {
     BitArray ba(15, 4545); // 170 в десятичном
     BitArray result = ba >> 4;
     EXPECT_EQ(result.count(), 4);
-    EXPECT_EQ(result.to_string(), "000000100011100");
+    EXPECT_EQ(result.toString(), "000000100011100");
 }
 
 TEST(BitArrayTest, ShiftByZero) {
     BitArray ba(8, 0b10101010); // 170 в десятичном
     ba <<= 0; // Сдвиг влево на 0
     EXPECT_EQ(ba.count(), 4);
-    EXPECT_EQ(ba.to_string(), "10101010");
+    EXPECT_EQ(ba.toString(), "10101010");
     ba >>= 0; // Сдвиг вправо на 0
     EXPECT_EQ(ba.count(), 4);
-    EXPECT_EQ(ba.to_string(), "10101010");
+    EXPECT_EQ(ba.toString(), "10101010");
 }
 
 TEST(BitArrayTest, NegativeShift) {
@@ -234,7 +234,7 @@ TEST(BitArrayTest, Set) {
     ba.set();
     EXPECT_EQ(ba.count(), 15);
     EXPECT_EQ(ba.size(), 15);
-    EXPECT_EQ(ba.to_string(), "111111111111111");
+    EXPECT_EQ(ba.toString(), "111111111111111");
 }
 
 TEST(BitArrayTest, Reset) {
@@ -243,13 +243,13 @@ TEST(BitArrayTest, Reset) {
     ba.reset();
     EXPECT_EQ(ba.count(), 0);
     EXPECT_EQ(ba.size(), 13);
-    EXPECT_EQ(ba.to_string(), "0000000000000");
+    EXPECT_EQ(ba.toString(), "0000000000000");
     ba.resize(17, 1);
     EXPECT_EQ(ba.count(), 4);
-    EXPECT_EQ(ba.to_string(), "00000000000001111");
+    EXPECT_EQ(ba.toString(), "00000000000001111");
     ba.reset();
     EXPECT_EQ(ba.count(), 0);
-    EXPECT_EQ(ba.to_string(), "00000000000000000");
+    EXPECT_EQ(ba.toString(), "00000000000000000");
 }
 
 TEST(BitArrayTest, AnyTrue) {
@@ -268,7 +268,7 @@ TEST(BitArrayTest, OperatorNot) {
     BitArray ba(12, 1252);
     BitArray result = ~ba;
     EXPECT_EQ(result.size(), 12);
-    EXPECT_EQ(result.to_string(), "101100011011");
+    EXPECT_EQ(result.toString(), "101100011011");
 }
 
 TEST(BitArrayTest, IndexOperator) {
@@ -327,7 +327,7 @@ TEST(BitArrayTest, BitwiseOperators) {
     EXPECT_THROW(BitArray result = a & c, std::invalid_argument);
     EXPECT_THROW(BitArray result = a | c, std::invalid_argument);
     EXPECT_THROW(BitArray result = a ^ c, std::invalid_argument);
-    EXPECT_EQ(and_result.to_string(), "10001000");
-    EXPECT_EQ(or_result.to_string(), "11101110");
-    EXPECT_EQ(xor_result.to_string(), "01100110");
+    EXPECT_EQ(and_result.toString(), "10001000");
+    EXPECT_EQ(or_result.toString(), "11101110");
+    EXPECT_EQ(xor_result.toString(), "01100110");
 }

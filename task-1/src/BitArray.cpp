@@ -1,171 +1,171 @@
 #include "BitArray.h"
 #include <cstring>
 
-void BitArray::clear_extra_bits() {
-    if (num_bits % 8 == 0) {
+void BitArray::clearExtraBits() {
+    if (numBits % bitsInByte == 0) {
         return;
     }
-    const int last_byte = num_bytes - 1;
-    const int valid_bits = num_bits % BITS_IN_BYTE;
-    const unsigned char mask = MAX_BYTE << (BITS_IN_BYTE - valid_bits);
-    bits[last_byte] &= mask;
+    const int lastByte = numBytes - 1;
+    const int validBits = numBits % bitsInByte;
+    const unsigned char mask = maxByte << (bitsInByte - validBits);
+    bits[lastByte] &= mask;
 }
 
 void BitArray::set(int n, bool val) {
-    if (n < 0 || n >= num_bits) {
+    if (n < 0 || n >= numBits) {
         throw std::out_of_range("BitArray::set");
     }
-    const int byte_index = n / BITS_IN_BYTE;
-    const int bit_index = n % BITS_IN_BYTE;
+    const int byteIndex = n / bitsInByte;
+    const int bitIndex = n % bitsInByte;
     if (val) {
-        bits[byte_index] |= (1 << (7 - bit_index));
+        bits[byteIndex] |= (1 << (7 - bitIndex));
     }
     else {
-        bits[byte_index] &= ~(1 << (7 - bit_index));
+        bits[byteIndex] &= ~(1 << (7 - bitIndex));
     }
 }
 
-BitArray::BitRef::BitRef(unsigned char& byte, int bit_position) : byte(byte), bit_position(bit_position) {}
+BitArray::BitRef::BitRef(unsigned char& byte, int bitPosition) : byte(byte), bitPosition(bitPosition) {}
 
 BitArray::BitRef& BitArray::BitRef::operator=(const unsigned char value) {
     if (value) {
-        byte |= (1 << (7 - bit_position));
+        byte |= (1 << (7 - bitPosition));
     } else {
-        byte &= ~(1 << (7 - bit_position));
+        byte &= ~(1 << (7 - bitPosition));
     }
     return *this;
 }
 
 BitArray::BitRef::operator bool() const {
-    return (byte & (1 << (7 - bit_position))) ? true : false;
+    return (byte & (1 << (7 - bitPosition))) ? true : false;
 }
 
 BitArray::BitRef BitArray::operator[](int i) {
-    if (i < 0 || i >= num_bits) {
+    if (i < 0 || i >= numBits) {
         throw std::out_of_range("BitArray::BitRef::operator[]");
     }
-    const int byte_index = i / BITS_IN_BYTE;
-    const int bit_index = i % BITS_IN_BYTE;
-    return {bits[byte_index], bit_index};
+    const int byteIndex = i / bitsInByte;
+    const int bitIndex = i % bitsInByte;
+    return {bits[byteIndex], bitIndex};
 }
 
 BitArray::BitArray() {
     bits = nullptr;
-    num_bits = 0;
-    num_bytes = 0;
+    numBits = 0;
+    numBytes = 0;
 }
 
 BitArray::~BitArray() {
     delete[] bits;
 }
 
-BitArray::BitArray(int num_bits, long value) : num_bits(num_bits) {
-    num_bytes = num_bits / BITS_IN_BYTE + (num_bits % BITS_IN_BYTE == 0 ? 0 : 1);
-    this->num_bits = num_bits;
-    bits = new unsigned char[num_bytes]();
-    for (int i = 0; i < sizeof(long) * 8 && i < num_bits; ++i) {
-        set(num_bits - i - 1, (value >> i) & 1);
+BitArray::BitArray(int numBits, long value) : numBits(numBits) {
+    numBytes = numBits / bitsInByte + (numBits % bitsInByte == 0 ? 0 : 1);
+    this->numBits = numBits;
+    bits = new unsigned char[numBytes]();
+    for (int i = 0; i < sizeof(long) * 8 && i < numBits; ++i) {
+        set(numBits - i - 1, (value >> i) & 1);
     }
 }
 
 BitArray::BitArray(const BitArray& b) {
-    this->num_bits = b.num_bits;
-    this->num_bytes = b.num_bytes;
-    this->bits = new unsigned char[num_bytes]();
-    memcpy(this->bits, b.bits, num_bytes);
+    this->numBits = b.numBits;
+    this->numBytes = b.numBytes;
+    this->bits = new unsigned char[numBytes]();
+    memcpy(this->bits, b.bits, numBytes);
 }
 
-void BitArray::shift_left(const int& n) {
-    const int byte_shift = n / BITS_IN_BYTE;
-    const int bit_shift = n % BITS_IN_BYTE;
-    for (int i = 0; i < num_bytes; i++) {
-        if (i + byte_shift < num_bytes) {
-            bits[i] = bits[i + byte_shift];
+void BitArray::shiftLeft(const int& n) {
+    const int byteShift = n / bitsInByte;
+    const int bitShift = n % bitsInByte;
+    for (int i = 0; i < numBytes; i++) {
+        if (i + byteShift < numBytes) {
+            bits[i] = bits[i + byteShift];
         } else {
             bits[i] = 0;
         }
     }
-    for (int i = 0; i < num_bytes - byte_shift; i++) {
-        bits[i] <<= bit_shift;
-        if (i + 1 < num_bytes) {
-            bits[i] |= bits[i + 1] >> (BITS_IN_BYTE - bit_shift);
+    for (int i = 0; i < numBytes - byteShift; i++) {
+        bits[i] <<= bitShift;
+        if (i + 1 < numBytes) {
+            bits[i] |= bits[i + 1] >> (bitsInByte - bitShift);
         }
     }
 }
 
-void BitArray::shift_right(const int& n) {
-    const int byte_shift = n / BITS_IN_BYTE;
-    const int bit_shift = n % BITS_IN_BYTE;
-    for (int i = num_bytes - 1; i >= 0; i--) {
-        if (i - byte_shift >= 0) {
-            bits[i] = bits[i - byte_shift];
+void BitArray::shiftRight(const int& n) {
+    const int byteShift = n / bitsInByte;
+    const int bitShift = n % bitsInByte;
+    for (int i = numBytes - 1; i >= 0; i--) {
+        if (i - byteShift >= 0) {
+            bits[i] = bits[i - byteShift];
         } else {
             bits[i] = 0;
         }
     }
-    for (int i = num_bytes - 1; i >= byte_shift; i--) {
-        bits[i] >>= bit_shift;
+    for (int i = numBytes - 1; i >= byteShift; i--) {
+        bits[i] >>= bitShift;
         if (i - 1 >= 0) {
-            bits[i] |= bits[i - 1] << (BITS_IN_BYTE - bit_shift);
+            bits[i] |= bits[i - 1] << (bitsInByte - bitShift);
         }
     }
-    clear_extra_bits();
+    clearExtraBits();
 }
 
-std::string BitArray::byte_to_string(unsigned char byte) const {
+std::string BitArray::byteToString(unsigned char byte) const {
     std::string result;
-    for (int i = BITS_IN_BYTE - 1; i >= 0; i--) {
+    for (int i = bitsInByte - 1; i >= 0; i--) {
         result += byte & (1 << i) ? '1' : '0';
     }
     return result;
 }
 
 void BitArray::swap(BitArray& b) {
-    std::swap(this->num_bits, b.num_bits);
+    std::swap(this->numBits, b.numBits);
     std::swap(bits, b.bits);
-    std::swap(this->num_bytes, b.num_bytes);
+    std::swap(this->numBytes, b.numBytes);
 }
 
 BitArray& BitArray::operator=(const BitArray& b) {
     if (this != &b) {
         delete[] bits;
-        this->num_bits = b.num_bits;
-        this->num_bytes = b.num_bytes;
-        this->bits = new unsigned char[num_bytes]();
-        memcpy(this->bits, b.bits, num_bytes);
+        this->numBits = b.numBits;
+        this->numBytes = b.numBytes;
+        this->bits = new unsigned char[numBytes]();
+        memcpy(this->bits, b.bits, numBytes);
     }
     return *this;
 }
 
-void BitArray::resize(const int num_bits, const unsigned char value) {
+void BitArray::resize(const int numBits, const unsigned char value) {
     if (value != 0 && value != 1) {
         throw std::invalid_argument("Value must be 0 or 1");
     }
-    if (num_bits < 0) {
+    if (numBits < 0) {
         throw std::invalid_argument("BitArray::resize");
     }
 
-    if (num_bits > this->num_bits && value) {
-        bits[num_bytes - 1] |= MAX_BYTE >> (this->num_bits % BITS_IN_BYTE);
+    if (numBits > this->numBits && value) {
+        bits[numBytes - 1] |= maxByte >> (this->numBits % bitsInByte);
     }
 
-    const int new_num_bytes = num_bits / BITS_IN_BYTE + (num_bits % BITS_IN_BYTE == 0 ? 0 : 1);
-    unsigned char* new_bits = new unsigned char[new_num_bytes]();
+    const int newNumBytes = numBits / bitsInByte + (numBits % bitsInByte == 0 ? 0 : 1);
+    unsigned char* newBits = new unsigned char[newNumBytes]();
     if (bits) {
-        std::memcpy(new_bits, bits, std::min(num_bytes, new_num_bytes));
+        std::memcpy(newBits, bits, std::min(numBytes, newNumBytes));
         delete[] bits;
     }
 
-    bits = new_bits;
+    bits = newBits;
 
-    if (new_num_bytes > this->num_bytes && value) {
-        for (int i = this->num_bytes; i < new_num_bytes; i++) {
-            bits[i] = MAX_BYTE;
+    if (newNumBytes > this->numBytes && value) {
+        for (int i = this->numBytes; i < newNumBytes; i++) {
+            bits[i] = maxByte;
         }
     }
-    this->num_bits = num_bits;
-    this->num_bytes = new_num_bytes;
-    clear_extra_bits();
+    this->numBits = numBits;
+    this->numBytes = newNumBytes;
+    clearExtraBits();
 }
 
 void BitArray::clear() {
@@ -174,46 +174,46 @@ void BitArray::clear() {
     }
     delete[] bits;
     bits = nullptr;
-    num_bytes = 0;
-    num_bits = 0;
+    numBytes = 0;
+    numBits = 0;
 }
 
-void BitArray::push_back(unsigned char bit) {
-    if (num_bits % BITS_IN_BYTE == 0) {
-        resize(num_bits + 1);
-        num_bits--;
+void BitArray::pushBack(unsigned char bit) {
+    if (numBits % bitsInByte == 0) {
+        resize(numBits + 1);
+        numBits--;
     }
     if (bit) {
-        bits[(num_bits / BITS_IN_BYTE)] |= 1 << (7 - (num_bits % BITS_IN_BYTE));
+        bits[(numBits / bitsInByte)] |= 1 << (7 - (numBits % bitsInByte));
     }
-    num_bits++;
+    numBits++;
 }
 
 BitArray& BitArray::operator&=(const BitArray& b) {
-    if (this->num_bits != b.num_bits) {
+    if (this->numBits != b.numBits) {
         throw std::invalid_argument("BitArrays must be of the same size");
     }
-    for (int i = 0; i < num_bytes; i++) {
+    for (int i = 0; i < numBytes; i++) {
         bits[i] &= b.bits[i];
     }
     return *this;
 }
 
 BitArray& BitArray::operator|=(const BitArray& b) {
-    if (this->num_bits != b.num_bits) {
+    if (this->numBits != b.numBits) {
         throw std::invalid_argument("BitArrays must be of the same size");
     }
-    for (int i = 0; i < num_bytes; i++) {
+    for (int i = 0; i < numBytes; i++) {
         bits[i] |= b.bits[i];
     }
     return *this;
 }
 
 BitArray& BitArray::operator^=(const BitArray& b) {
-    if (this->num_bits != b.num_bits) {
+    if (this->numBits != b.numBits) {
         throw std::invalid_argument("BitArrays must be of the same size");
     }
-    for (int i = 0; i < num_bytes; i++) {
+    for (int i = 0; i < numBytes; i++) {
         bits[i] ^= b.bits[i];
     }
     return *this;
@@ -226,7 +226,7 @@ BitArray& BitArray::operator<<=(int n) {
     if (n == 0) {
         return *this;
     }
-    shift_left(n);
+    shiftLeft(n);
     return *this;
 }
 
@@ -237,7 +237,7 @@ BitArray& BitArray::operator>>=(int n) {
     if (n == 0) {
         return *this;
     }
-    shift_right(n);
+    shiftRight(n);
     return *this;
 }
 
@@ -260,15 +260,15 @@ BitArray BitArray::operator>>(const int n) const {
 }
 
 BitArray& BitArray::set() {
-    for (int i = 0; i < num_bytes; i++) {
-        bits[i] = MAX_BYTE;
+    for (int i = 0; i < numBytes; i++) {
+        bits[i] = maxByte;
     }
-    clear_extra_bits();
+    clearExtraBits();
     return *this;
 }
 
 BitArray& BitArray::reset() {
-    for (int i = 0; i < num_bytes; i++) {
+    for (int i = 0; i < numBytes; i++) {
         bits[i] = 0;
     }
     return *this;
@@ -278,7 +278,7 @@ bool BitArray::any() const {
     if (bits == nullptr) {
         return false;
     }
-    for (int i = 0; i < num_bytes; i++) {
+    for (int i = 0; i < numBytes; i++) {
         if (bits[i] != 0) {
             return true;
         }
@@ -290,7 +290,7 @@ bool BitArray::none() const {
     if (bits == nullptr) {
         return true;
     }
-    for (int i = 0; i < num_bytes; i++) {
+    for (int i = 0; i < numBytes; i++) {
         if (bits[i] != 0) {
             return false;
         }
@@ -300,17 +300,17 @@ bool BitArray::none() const {
 
 BitArray BitArray::operator~() const {
     BitArray result = *this;
-    for (int i = 0; i < num_bytes; i++) {
+    for (int i = 0; i < numBytes; i++) {
         result.bits[i] = ~(this->bits[i]);
     }
-    result.clear_extra_bits();
+    result.clearExtraBits();
     return result;
 }
 
 int BitArray::count() const {
     int result = 0;
-    for (int i = 0 ; i < num_bytes; i++) {
-        for (int j = 0; j < BITS_IN_BYTE; j++) {
+    for (int i = 0 ; i < numBytes; i++) {
+        for (int j = 0; j < bitsInByte; j++) {
             if (bits[i] & (1 << j)) {
                 result += 1;
             }
@@ -320,27 +320,27 @@ int BitArray::count() const {
 }
 
 bool BitArray::operator[](int i) const {
-    if (i < 0 || i >= num_bits) {
+    if (i < 0 || i >= numBits) {
         throw std::out_of_range("Index out of range");
     }
-    return bits[i / BITS_IN_BYTE] & (1 << (7 - (i % BITS_IN_BYTE)));
+    return bits[i / bitsInByte] & (1 << (7 - (i % bitsInByte)));
 }
 
 int BitArray::size() const {
-    return num_bits;
+    return numBits;
 }
 
 bool BitArray::empty() const {
-    return num_bits == 0;
+    return numBits == 0;
 }
 
-std::string BitArray::to_string() const {
+std::string BitArray::toString() const {
     std::string result;
-    for (int i = 0; i < num_bytes; i++) {
-        result += byte_to_string(bits[i]);
+    for (int i = 0; i < numBytes; i++) {
+        result += byteToString(bits[i]);
     }
-    if (num_bits % BITS_IN_BYTE != 0) {
-        result.erase(num_bytes * BITS_IN_BYTE - (BITS_IN_BYTE - (num_bits % BITS_IN_BYTE)), BITS_IN_BYTE - (num_bits % BITS_IN_BYTE));
+    if (numBits % bitsInByte != 0) {
+        result.erase(numBytes * bitsInByte - (bitsInByte - (numBits % bitsInByte)), bitsInByte - (numBits % bitsInByte));
     }
     return result;
 }
