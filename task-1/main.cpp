@@ -1,5 +1,5 @@
 #include <iostream>
-#include "src/BitArray.h"
+#include "BitArray.h"
 
 int main() {
     // Создание битового массива на 16 бит, инициализированного значением 5
