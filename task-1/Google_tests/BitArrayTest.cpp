@@ -25,7 +25,7 @@ TEST(BitArrayTest, CopyConstructor) {
     BitArray ba2(ba1);
     EXPECT_EQ(ba2.size(), ba1.size());
     EXPECT_EQ(ba2.toString(), ba1.toString());
-    ba1[0] = 0; // Изменяем первый бит
+    ba1[0] = 0;
     EXPECT_NE(ba1.toString(), ba2.toString());
 }
 
@@ -96,7 +96,7 @@ TEST(BitArrayTest, ResizeWithInvalidValue) {
 }
 
 TEST(BitArrayTest, ResizeToSmallerSize) {
-    BitArray ba(8, 0b11111111);
+    BitArray ba(8, 255);
     ba.resize(5);
     EXPECT_EQ(ba.size(), 5);
     EXPECT_EQ(ba.toString(), "11111");
@@ -204,18 +204,18 @@ TEST(BitArrayTest, OperatorLeftShift) {
 }
 
 TEST(BitArrayTest, OperatorRightShift) {
-    BitArray ba(15, 4545); // 170 в десятичном
+    BitArray ba(15, 4545);
     BitArray result = ba >> 4;
     EXPECT_EQ(result.count(), 4);
     EXPECT_EQ(result.toString(), "000000100011100");
 }
 
 TEST(BitArrayTest, ShiftByZero) {
-    BitArray ba(8, 0b10101010); // 170 в десятичном
-    ba <<= 0; // Сдвиг влево на 0
+    BitArray ba(8, 170);
+    ba <<= 0;
     EXPECT_EQ(ba.count(), 4);
     EXPECT_EQ(ba.toString(), "10101010");
-    ba >>= 0; // Сдвиг вправо на 0
+    ba >>= 0;
     EXPECT_EQ(ba.count(), 4);
     EXPECT_EQ(ba.toString(), "10101010");
 }
@@ -321,9 +321,9 @@ TEST(BitArrayTest, BitwiseOperators) {
     BitArray a(8, 170);
     BitArray b(8, 204);
     BitArray c(9, 100);
-    BitArray and_result = a & b; // 0b10001000
-    BitArray or_result = a | b;  // 0b11101110
-    BitArray xor_result = a ^ b; // 0b01100110
+    BitArray and_result = a & b;
+    BitArray or_result = a | b;
+    BitArray xor_result = a ^ b;
     EXPECT_THROW(BitArray result = a & c, std::invalid_argument);
     EXPECT_THROW(BitArray result = a | c, std::invalid_argument);
     EXPECT_THROW(BitArray result = a ^ c, std::invalid_argument);
