@@ -331,3 +331,11 @@ TEST(BitArrayTest, BitwiseOperators) {
     EXPECT_EQ(or_result.toString(), "11101110");
     EXPECT_EQ(xor_result.toString(), "01100110");
 }
+
+TEST(BitArrayTest, GetBit) {
+    const BitArray ba(8, 170);
+    bool a = ba[0];
+    EXPECT_EQ(a, true);
+    EXPECT_THROW(ba[-1], std::out_of_range);
+    EXPECT_THROW(ba[15], std::out_of_range);
+}
