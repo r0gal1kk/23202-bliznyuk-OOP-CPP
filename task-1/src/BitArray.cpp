@@ -189,6 +189,22 @@ void BitArray::pushBack(unsigned char bit) {
     numBits++;
 }
 
+void BitArray::shrink() {
+    int last_one_pos = 0;
+    for (int i = numBytes - 1; i >= 0; i--) {
+        for (int j = 0; j < bitsInByte; j++) {
+            if (bits[i] & (1 << j)) {
+                last_one_pos = (i * bitsInByte) + (7 - j);
+                break;
+            }
+        }
+        if (last_one_pos) {
+            break;
+        }
+    }
+    resize(last_one_pos + 1);
+}
+
 BitArray& BitArray::operator&=(const BitArray& b) {
     if (this->numBits != b.numBits) {
         throw std::invalid_argument("BitArrays must be of the same size");
@@ -328,6 +344,10 @@ bool BitArray::operator[](int i) const {
 
 int BitArray::size() const {
     return numBits;
+}
+
+int BitArray::getBytesCount() const {
+    return numBytes;
 }
 
 bool BitArray::empty() const {

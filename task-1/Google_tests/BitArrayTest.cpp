@@ -339,3 +339,19 @@ TEST(BitArrayTest, GetBit) {
     EXPECT_THROW(ba[-1], std::out_of_range);
     EXPECT_THROW(ba[15], std::out_of_range);
 }
+
+TEST (BitArrayTest, Shrink) {
+    BitArray ba1(9, 170); // 01010101 0|0000000
+    EXPECT_EQ(ba1.getBytesCount(), 2);
+    ba1.shrink();
+    EXPECT_EQ(ba1.toString(), "01010101");
+    EXPECT_EQ(ba1.getBytesCount(), 1);
+    EXPECT_EQ(ba1.size(), 8);
+
+    BitArray ba2(15, 40); // 00000000 0101000|0
+    EXPECT_EQ(ba2.getBytesCount(), 2);
+    ba2.shrink();
+    EXPECT_EQ(ba2.toString(), "000000000101");
+    EXPECT_EQ(ba2.getBytesCount(), 2);
+    EXPECT_EQ(ba2.size(), 12);
+}

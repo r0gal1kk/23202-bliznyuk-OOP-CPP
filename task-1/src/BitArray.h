@@ -42,6 +42,7 @@ public:
     void resize(const int numBits, const unsigned char value = 0);
     void clear();
     void pushBack(unsigned char bit);
+    void shrink();
 
     BitArray& operator&=(const BitArray& b);
     BitArray& operator|=(const BitArray& b);
@@ -59,6 +60,7 @@ public:
     int count() const;
     bool operator[](int i) const;
     int size() const;
+    int getBytesCount() const;
     bool empty() const;
     std::string toString() const;
 
