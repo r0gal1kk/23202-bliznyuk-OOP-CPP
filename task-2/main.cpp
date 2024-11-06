@@ -14,6 +14,7 @@ private:
     std::unordered_set<int> birthRules;
     std::unordered_set<int> survivalRules;
 public:
+    Rule() = default;
     Rule(const std::string& birthRule, const std::string& survivalRule) {
         for (const auto c : birthRule) {
             if (isdigit(c)) {
@@ -43,8 +44,8 @@ private:
     int cols;
 public:
     Grid() {
-        rows = 35;
-        cols = 35;
+        rows = 0;
+        cols = 0;
         cells = std::vector<std::vector<bool>>(rows, std::vector<bool>(cols, false));
     }
 
@@ -54,14 +55,14 @@ public:
         cells = std::vector<std::vector<bool>>(rows, std::vector<bool>(cols, false));
     }
 
-    void setCell(const int row, const int col, const bool value) {
+    void setCell(const int& row, const int& col, const bool& value) {
         if (row < 0 || row >= rows || col < 0 || col >= cols) {
             std::cerr << "Invalid cell index" << std::endl;
         }
         cells[row][col] = value;
     }
 
-    bool getCell(const int row, const int col) const {
+    bool getCell(const int& row, const int& col) const {
         if (row < 0 || row >= rows || col < 0 || col >= cols) {
             std::cerr << "Invalid cell index" << std::endl;
         }
@@ -81,7 +82,8 @@ class Universe {
 private:
     Grid field;
     unsigned long long generation;
-    const int birthRule = 3;
+    Rule rule;
+    std::string name;
 
     int countNeighbours(const Grid& currentField, const int row, const int col) {
         int count = 0;
@@ -108,9 +110,11 @@ public:
         field = Grid();
     }
 
-    Universe(const int& rows, const int& cols) {
+    Universe(const int& rows, const int& cols, const std::string& name, const Rule& rule) {
         generation = 1;
         field = Grid(rows, cols);
+        this->name = name;
+        this->rule = rule;
     }
     //рофлометод для проверки работы
     void initialize() {
@@ -138,10 +142,10 @@ public:
             for (int col = 0; col < cols; ++col) {
                 const int neighbours = countNeighbours(currentField, row, col);
                 const bool alive = currentField.getCell(row, col);
-                if (!alive && neighbours == birthRule) {
+                if (!alive && rule.shouldBorn(neighbours)) {
                     field.setCell(row, col, true);
                 }
-                else if (alive && (neighbours < 2 || neighbours > birthRule)) {
+                else if (alive && !rule.shouldSurvive(neighbours)) {
                     field.setCell(row, col, false);
                 }
                 else {
@@ -154,7 +158,11 @@ public:
 
     void display(const Grid& currentField) {
         system("cls");
+        std::cout << name << std::endl;
+        std::cout << "Height: " << currentField.getRows() << std::endl;
+        std::cout << "Width: " << currentField.getCols() << std::endl;
         std::cout << "Generation: " << generation << std::endl;
+
         HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
         const int rows = field.getRows();
         const int cols = field.getCols();
@@ -162,12 +170,11 @@ public:
             for (int col = 0; col < cols; ++col) {
                 if (currentField.getCell(row, col)) {
                     SetConsoleTextAttribute(hConsole, 0 | (0 << 4));
-                    std::cout << "  ";
                 }
                 else {
                     SetConsoleTextAttribute(hConsole, 15 | (15 << 4));
-                    std::cout << "  ";
                 }
+                std::cout << "  ";
             }
             SetConsoleTextAttribute(hConsole, 7 | (0 << 4));
             std::cout << std::endl;
@@ -182,7 +189,7 @@ private:
         const std::string namePart = line.substr(3);
         if (namePart.empty()) {
             name = "MyUniverse";
-            std::cerr << "Warning: No name provided. Using default name 'MyUniverse'.\nUsage: #N <name>" << std::endl;
+            std::cerr << "Warning: No name provided. Using default name 'My Universe'.\nUsage: #N <name>" << std::endl;
         } else {
             name = namePart;
         }
@@ -245,10 +252,11 @@ private:
         hasCoords = true;
     }
 
-    static void handleNonCriticalErrors(const bool& hasName, const bool& hasRule, const bool& hasDimensions, const std::vector<std::pair<int, int>>& liveCells, Rule& rule, int& width, int& height) {
+    static void handleNonCriticalErrors(const bool& hasName, const bool& hasRule, const bool& hasDimensions, const std::vector<std::pair<int, int>>& liveCells, Rule& rule, int& width, int& height, std::string& name) {
         if (!hasName) {
-            std::cerr << "Warning: No name found in the file. Using default name 'MyUniverse'.\n"
+            std::cerr << "Warning: No name found in the file. Using default name 'My Universe'.\n"
                          "Use #N <name> in the beginning of the file to set custom name." << std::endl;
+            name = "My Universe";
         }
         if (!hasRule) {
             std::cerr << "Warning: No rule found in the file. Using default rule B3/S23.\n"
@@ -268,7 +276,7 @@ private:
         }
     }
 public:
-    static Universe loadFromFile(const std::string& filename, Rule& rule) {
+    static Universe loadFromFile(const std::string& filename) {
         std::ifstream file(filename);
         if (!file.is_open()) {
             throw std::runtime_error("Failed to open file: " + filename);
@@ -276,6 +284,7 @@ public:
 
         std::string line;
         std::string name;
+        Rule rule;
         int width = 0, height = 0;
         std::vector<std::pair<int, int>> liveCells;
         bool hasName = false;
@@ -299,9 +308,9 @@ public:
 
         file.close();
 
-        handleNonCriticalErrors(hasName, hasRule, hasDimensions, liveCells, rule, width, height);
+        handleNonCriticalErrors(hasName, hasRule, hasDimensions, liveCells, rule, width, height, name);
 
-        Universe universe(width, height);
+        Universe universe(width, height, name, rule);
         for (const auto& cell : liveCells) {
             universe.field.setCell(cell.first, cell.second, true);
         }
@@ -314,15 +323,14 @@ class Game {
 private:
     bool gameActive;
     Universe universe;
-    std::string filename;
 public:
-    Game(std::string filename) {
+    explicit Game(const std::string& filename) {
         gameActive = false;
-        this->filename = filename;
+        universe = UniverseLoader::loadFromFile(filename);
     }
+
     void run() {
         gameActive = true;
-        universe.initialize();
         Grid currentField = universe.getField();
         while (gameActive) {
             universe.display(currentField);
