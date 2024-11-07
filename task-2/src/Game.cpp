@@ -20,3 +20,11 @@ void Game::run() {
         }
     }
 }
+
+void Game::runOffline(const std::string &outputName, const int &iterations) {
+    Grid currentField = universe.getField();
+    for (int i = 0; i < iterations; i++) {
+        currentField = universe.update(currentField);
+    }
+    UniverseWriter::writeToFile(universe, currentField, outputName);
+}

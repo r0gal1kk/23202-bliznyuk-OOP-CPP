@@ -13,6 +13,7 @@ private:
 public:
     explicit Game(const std::string& filename);
     void run();
+    void runOffline(const std::string& outputName, const int& iterations);
 };
 
 #endif // GAME_H

@@ -10,7 +10,7 @@ void CommandHandler::handleDumpCommand(const std::vector<std::string>& args, con
         return;
     }
     UniverseWriter::writeToFile(universe, currentField, args[0]);
-    std::cout << "This universe was saved to file" + args[0] << std::endl;
+    std::cout << "This universe has been saved to file " + args[0] << std::endl;
 }
 
 void CommandHandler::handleTickCommand(const std::vector<std::string>& args, Grid &currentField) const {
