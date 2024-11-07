@@ -20,3 +20,15 @@ bool Rule::shouldBorn(const int& liveNeighbours) const {
 bool Rule::shouldSurvive(const int& liveNeighbours) const {
     return survivalRules.count(liveNeighbours);
 }
+
+std::string Rule::getRuleString() const {
+    std::string result = "#R B";
+    for (const auto& rule : birthRules) {
+        result += std::to_string(rule);
+    }
+    result += "/S";
+    for (const auto& rule : survivalRules) {
+        result += std::to_string(rule);
+    }
+    return result;
+}

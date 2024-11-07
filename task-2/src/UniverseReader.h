@@ -1,5 +1,5 @@
-#ifndef UNIVERSELOADER_H
-#define UNIVERSELOADER_H
+#ifndef UNIVERSEREADER_H
+#define UNIVERSEREADER_H
 
 #include "Universe.h"
 #include <vector>
@@ -8,7 +8,7 @@
 #include <fstream>
 #include <stdexcept>
 
-class UniverseLoader {
+class UniverseReader {
 private:
     static void readName(const std::string& line, std::string& name, bool& hasName);
     static void readRules(const std::string& line, Rule& rule, bool& hasRule);
@@ -20,4 +20,4 @@ public:
     static Universe loadFromFile(const std::string& filename);
 };
 
-#endif // UNIVERSELOADER_H
+#endif

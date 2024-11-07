@@ -1,19 +1,22 @@
 #include "Game.h"
-#include "UniverseLoader.h"
-#include <thread>
-#include <chrono>
+#include "UniverseReader.h"
 
-Game::Game(const std::string& filename) {
-    gameActive = false;
-    universe = UniverseLoader::loadFromFile(filename);
-}
+Game::Game(const std::string& filename) : universe(UniverseReader::loadFromFile(filename)), commandHandler(universe) {}
 
 void Game::run() {
-    gameActive = true;
+    std::cout << "Press enter to start the game...";
+    std::cin.get();
     Grid currentField = universe.getField();
-    while (gameActive) {
-        universe.display(currentField);
-        currentField = universe.update(currentField);
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+    universe.display(currentField);
+    std::cout << "Enter command: ";
+
+    std::string command;
+    while (commandHandler.isGameActive()) {
+        std::getline(std::cin, command);
+        commandHandler.processCommand(command, currentField);
+        if (commandHandler.isGameActive()) {
+            std::cout << "Enter command: ";
+        }
     }
 }

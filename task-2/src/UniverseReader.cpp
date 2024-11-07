@@ -1,6 +1,6 @@
-#include "UniverseLoader.h"
+#include "UniverseReader.h"
 
-void UniverseLoader::readName(const std::string& line, std::string& name, bool& hasName) {
+void UniverseReader::readName(const std::string& line, std::string& name, bool& hasName) {
     const std::string namePart = line.substr(3);
     if (namePart.empty()) {
         name = "MyUniverse";
@@ -11,7 +11,7 @@ void UniverseLoader::readName(const std::string& line, std::string& name, bool& 
     hasName = true;
 }
 
-void UniverseLoader::readRules(const std::string& line, Rule& rule, bool& hasRule) {
+void UniverseReader::readRules(const std::string& line, Rule& rule, bool& hasRule) {
     std::string ruleStr = line.substr(3);
     const size_t pos = ruleStr.find('/');
     if (pos == std::string::npos) {
@@ -26,7 +26,7 @@ void UniverseLoader::readRules(const std::string& line, Rule& rule, bool& hasRul
     hasRule = true;
 }
 
-void UniverseLoader::readDimensions(const std::string& line, int& width, int& height, bool& hasDimensions) {
+void UniverseReader::readDimensions(const std::string& line, int& width, int& height, bool& hasDimensions) {
     std::istringstream iss(line.substr(3));
     hasDimensions = true;
     int w = 0, h = 0;
@@ -44,7 +44,7 @@ void UniverseLoader::readDimensions(const std::string& line, int& width, int& he
     height = h;
 }
 
-void UniverseLoader::readCoords(const std::string& line, const int& width, const int& height, std::vector<std::pair<int, int>>& liveCells, const bool& hasDimensions, bool& hasCoords) {
+void UniverseReader::readCoords(const std::string& line, const int& width, const int& height, std::vector<std::pair<int, int>>& liveCells, const bool& hasDimensions, bool& hasCoords) {
     std::istringstream iss(line);
     int x, y;
     if (!(iss >> x >> y)) {
@@ -67,7 +67,7 @@ void UniverseLoader::readCoords(const std::string& line, const int& width, const
     hasCoords = true;
 }
 
-void UniverseLoader::handleNonCriticalErrors(const bool& hasName, const bool& hasRule, const bool& hasDimensions, const std::vector<std::pair<int, int>>& liveCells, Rule& rule, int& width, int& height, std::string& name) {
+void UniverseReader::handleNonCriticalErrors(const bool& hasName, const bool& hasRule, const bool& hasDimensions, const std::vector<std::pair<int, int>>& liveCells, Rule& rule, int& width, int& height, std::string& name) {
     if (!hasName) {
         std::cerr << "Warning: No name found in the file. Using default name 'My Universe'.\n"
                      "Use #N <name> in the beginning of the file to set custom name." << std::endl;
@@ -91,7 +91,7 @@ void UniverseLoader::handleNonCriticalErrors(const bool& hasName, const bool& ha
     }
 }
 
-Universe UniverseLoader::loadFromFile(const std::string& filename) {
+Universe UniverseReader::loadFromFile(const std::string& filename) {
     std::ifstream file(filename);
     if (!file.is_open()) {
         throw std::runtime_error("Failed to open file: " + filename);

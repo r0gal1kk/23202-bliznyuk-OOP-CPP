@@ -19,13 +19,13 @@ public:
     Universe();
     Universe(const int& rows, const int& cols, const std::string& name, const Rule& rule);
 
-    void initialize();
     Grid getField() const;
     unsigned long long getGeneration() const;
     Grid update(const Grid& currentField);
     void display(const Grid& currentField);
 
-    friend class UniverseLoader;
+    friend class UniverseReader;
+    friend class UniverseWriter;
 };
 
 #endif // UNIVERSE_H

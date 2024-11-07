@@ -2,12 +2,14 @@
 #define GAME_H
 
 #include "Universe.h"
+#include "CommandHandler.h"
 #include <string>
 
 class Game {
 private:
-    bool gameActive;
     Universe universe;
+    CommandHandler commandHandler;
+
 public:
     explicit Game(const std::string& filename);
     void run();

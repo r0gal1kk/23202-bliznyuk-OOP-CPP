@@ -14,6 +14,7 @@ public:
 
     bool shouldBorn(const int& liveNeighbours) const;
     bool shouldSurvive(const int& liveNeighbours) const;
+    std::string getRuleString() const;
 };
 
 #endif // RULE_H

@@ -14,15 +14,6 @@ Universe::Universe(const int& rows, const int& cols, const std::string& name, co
     this->rule = rule;
 }
 
-void Universe::initialize() {
-    std::ifstream input("defaultUniverse.txt");
-    while (!input.eof()) {
-        int x, y;
-        input >> x >> y;
-        field.setCell(x, y, true);
-    }
-}
-
 Grid Universe::getField() const {
     return field;
 }
@@ -73,10 +64,8 @@ Grid Universe::update(const Grid& currentField) {
 }
 
 void Universe::display(const Grid& currentField) {
-    system("cls");
+    //system("cls");
     std::cout << name << std::endl;
-    std::cout << "Height: " << currentField.getRows() << std::endl;
-    std::cout << "Width: " << currentField.getCols() << std::endl;
     std::cout << "Generation: " << generation << std::endl;
 
     HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);

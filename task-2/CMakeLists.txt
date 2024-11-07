@@ -10,7 +10,11 @@ add_executable(task_2 main.cpp
         src/Grid.cpp
         src/Universe.h
         src/Universe.cpp
-        src/UniverseLoader.h
-        src/UniverseLoader.cpp
+        src/UniverseReader.h
+        src/UniverseReader.cpp
         src/Game.h
-        src/Game.cpp)
+        src/Game.cpp
+        src/CommandHandler.h
+        src/CommandHandler.cpp
+        src/UniverseWriter.h
+        src/UniverseWriter.cpp)
