@@ -190,19 +190,19 @@ void BitArray::pushBack(unsigned char bit) {
 }
 
 void BitArray::shrink() {
-    int last_one_pos = 0;
+    int lastOnePos = 0;
     for (int i = numBytes - 1; i >= 0; i--) {
         for (int j = 0; j < bitsInByte; j++) {
             if (bits[i] & (1 << j)) {
-                last_one_pos = (i * bitsInByte) + (7 - j);
+                lastOnePos = (i * bitsInByte) + (7 - j);
                 break;
             }
         }
-        if (last_one_pos) {
+        if (lastOnePos) {
             break;
         }
     }
-    resize(last_one_pos + 1);
+    resize(lastOnePos + 1);
 }
 
 BitArray& BitArray::operator&=(const BitArray& b) {
