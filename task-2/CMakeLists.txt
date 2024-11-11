@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_executable(task_2_run main.cpp)
 # set this flag when running coverage tests in Clion
-set(CMAKE_CXX_FLAGS "--coverage")
+# set(CMAKE_CXX_FLAGS "--coverage")
 
 # generate debug information
 #set(CMAKE_CXX_FLAGS "-g")
