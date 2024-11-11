@@ -3,18 +3,16 @@ project(task_2)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(task_2 main.cpp
-        src/Rule.h
-        src/Rule.cpp
-        src/Grid.h
-        src/Grid.cpp
-        src/Universe.h
-        src/Universe.cpp
-        src/UniverseReader.h
-        src/UniverseReader.cpp
-        src/Game.h
-        src/Game.cpp
-        src/CommandHandler.h
-        src/CommandHandler.cpp
-        src/UniverseWriter.h
-        src/UniverseWriter.cpp)
+add_executable(task_2_run main.cpp)
+# set this flag when running coverage tests in Clion
+set(CMAKE_CXX_FLAGS "--coverage")
+
+# generate debug information
+#set(CMAKE_CXX_FLAGS "-g")
+
+include_directories(src)
+add_subdirectory(src)
+
+add_subdirectory(Google_tests)
+
+target_link_libraries(${CMAKE_PROJECT_NAME}_run ${CMAKE_PROJECT_NAME}_lib)
