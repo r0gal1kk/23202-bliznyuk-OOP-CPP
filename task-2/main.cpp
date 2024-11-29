@@ -34,7 +34,7 @@ bool parseArguments(int argc, char* argv[], std::string& inputFile, std::string&
 }
 
 int main(int argc, char* argv[]) {
-    std::string inputName = "Universes/defaultUniverse.txt";
+    std::string inputName = "defaultUniverse.txt";
     if (argc == 2) {
         inputName = argv[1];
     }
@@ -54,7 +54,7 @@ int main(int argc, char* argv[]) {
         game.runOffline(outputName, iterations);
         return 0;
     }
-    else {
+    else if (argc != 1) {
         std::cerr << "Invalid number of arguments." << std::endl;
         return 1;
     }
