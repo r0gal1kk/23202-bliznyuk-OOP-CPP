@@ -7,19 +7,9 @@
 #include "UniverseWriter.h"
 
 class CommandHandler {
-private:
-    Universe& universe;
-    bool gameActive;
-
-    void handleDumpCommand(const std::vector<std::string>& args, const Grid &currentField) const;
-    void handleTickCommand(const std::vector<std::string>& args, Grid &currentField) const;
-    void handleExitCommand();
-    void handleHelpCommand(const std::vector<std::string>& args) const;
-
 public:
-    explicit CommandHandler(Universe& universe);
-    void processCommand(const std::string& command, Grid& currentField);
-    bool isGameActive() const;
+    virtual ~CommandHandler() = default;
+    virtual void handle(const std::vector<std::string>& args, Universe& universe, Grid& currentField, bool& gameActive) const = 0;
 };
 
 #endif // COMMANDHANDLER_H

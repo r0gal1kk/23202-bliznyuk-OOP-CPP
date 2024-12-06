@@ -2,13 +2,13 @@
 #define GAME_H
 
 #include "Universe.h"
-#include "CommandHandler.h"
+#include "CommandProcessor.h"
 #include <string>
 
 class Game {
 private:
     Universe universe;
-    CommandHandler commandHandler;
+    CommandProcessor commandProcessor;
 
 public:
     explicit Game(const std::string& filename);

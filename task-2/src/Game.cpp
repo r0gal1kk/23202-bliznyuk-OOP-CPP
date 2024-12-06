@@ -1,7 +1,7 @@
 #include "Game.h"
 #include "UniverseReader.h"
 
-Game::Game(const std::string& filename) : universe(UniverseReader::loadFromFile(filename)), commandHandler(universe) {}
+Game::Game(const std::string& filename) : universe(UniverseReader::loadFromFile(filename)), commandProcessor(universe) {}
 
 void Game::run() {
     std::cout << "Press enter to start the game...";
@@ -12,10 +12,10 @@ void Game::run() {
     std::cout << "Enter command: ";
 
     std::string command;
-    while (commandHandler.isGameActive()) {
+    while (commandProcessor.isGameActive()) {
         std::getline(std::cin, command);
-        commandHandler.processCommand(command, currentField);
-        if (commandHandler.isGameActive()) {
+        commandProcessor.processCommand(command, currentField);
+        if (commandProcessor.isGameActive()) {
             std::cout << "Enter command: ";
         }
     }
