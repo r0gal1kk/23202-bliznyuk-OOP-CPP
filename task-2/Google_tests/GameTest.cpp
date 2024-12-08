@@ -34,7 +34,7 @@ TEST (GameTest, Tick) {
     createInputFile("input.txt");
     Universe universe = UniverseReader::loadFromFile("input.txt");
     Grid field = universe.getField();
-    CommandHandler handler(universe);
+    CommandProcessor handler(universe);
     handler.processCommand("t 1", field);
     EXPECT_TRUE(field.getCell(1, 0));
     EXPECT_TRUE(field.getCell(1, 2));
@@ -50,7 +50,7 @@ TEST (GameTest, Dump) {
     createInputFile("input.txt");
     Universe universe = UniverseReader::loadFromFile("input.txt");
     Grid field = universe.getField();
-    CommandHandler handler(universe);
+    CommandProcessor handler(universe);
     handler.processCommand("dump output.txt", field);
     std::ifstream tempFile("output.txt");
     std::string line;
