@@ -12,35 +12,35 @@ enum class ErrorCode {
     UNKNOWN_ERROR = 6
 };
 
-class SoundProcessorException : public std::runtime_error {
+class Exceptions : public std::runtime_error {
 private:
     ErrorCode code;
 public:
-    explicit SoundProcessorException(const std::string& msg, ErrorCode code);
-    ErrorCode getCode() const;
+    explicit Exceptions(const std::string& msg, ErrorCode code);
+    ErrorCode getErrorType() const;
 };
 
-class InvalidArgumentsException : public SoundProcessorException {
+class InvalidArgumentsException : public Exceptions {
 public:
     explicit InvalidArgumentsException(const std::string& msg);
 };
 
-class UnsupportedFormatException : public SoundProcessorException {
+class UnsupportedFormatException : public Exceptions {
 public:
     explicit UnsupportedFormatException(const std::string& msg);
 };
 
-class ConfigParseException : public SoundProcessorException {
+class ConfigParseException : public Exceptions {
 public:
     explicit ConfigParseException(const std::string& msg);
 };
 
-class FileIOException : public SoundProcessorException {
+class FileIOException : public Exceptions {
 public:
     explicit FileIOException(const std::string& msg);
 };
 
-class ConversionException : public SoundProcessorException {
+class ConversionException : public Exceptions {
 public:
     explicit ConversionException(const std::string& msg);
 };
