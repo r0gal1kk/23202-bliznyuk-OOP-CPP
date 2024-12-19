@@ -93,16 +93,16 @@ std::vector<int16_t> FastConverter::convert(const std::vector<int16_t> &samples,
 }
 
 std::string MuteConverter::getDescription() const {
-    return "Mutes audio fragment of input1.wav\n"
+    return "Mute Converter\nMutes audio fragment of input1.wav\n"
            "Usage: mute <start second> <end second>\n\n";
 }
 
 std::string MixConverter::getDescription() const {
-    return "Mixes audio fragment of input1.wav with other input.wav\n"
+    return "Mix Converter\nMixes audio fragment of input1.wav with other input.wav\n"
            "Usage: mix $<input file number> <start second>\n\n";
 }
 
 std::string FastConverter::getDescription() const {
-    return "Accelerates audio fragment of input1.wav by integer multiplier\n"
+    return "Fast Converter\nAccelerates audio fragment of input1.wav by integer multiplier\n"
            "Usage: fast <start> <end> <acceleration coefficient>\n\n";
 }

@@ -4,7 +4,11 @@
 
 int main(int argc, char *argv[]) {
     try {
-        const CommandLineParser parser(argc, argv);
+        CommandLineParser parser(argc, argv);
+        const bool success = parser.parse();
+        if (!success) {
+            return 0;
+        }
         SoundProcessor processor(parser.getConfigFile(), parser.getInputFiles(), parser.getOutputFile());
         processor.process();
     } catch (const Exceptions &e) {

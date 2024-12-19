@@ -6,7 +6,7 @@
 
 void CommandLineParser::printHelp() const {
     std::cout << "Usage:\n"
-              << "sound_processor [-h] [-c config.txt output.wav input1.wav [input2.wav …]]\n\n"
+              << "sound_processor [-h] [-c config.txt output.wav input1.wav [input2.wav ...]]\n\n"
               << "Parameters:\n"
               << "-h : show this help\n"
               << "-c config.txt output.wav input1.wav [input2.wav ...] : run processing\n\n";
@@ -30,13 +30,14 @@ bool CommandLineParser::checkFormat(const std::string &arg, const std::string &f
     return std::regex_match(arg, wavRegex);
 }
 
-void CommandLineParser::parse() {
+bool CommandLineParser::parse() {
     if (argc < 2) {
         throw InvalidArgumentsException("Wrong number of arguments");
     }
     std::string arg = argv[1];
     if (arg == "-h") {
         printHelp();
+        return false;
     }
     else if (arg == "-c" && argc > 2) {
         arg = argv[2];
@@ -63,11 +64,10 @@ void CommandLineParser::parse() {
             }
         }
     }
+    return true;
 }
 
-CommandLineParser::CommandLineParser(int argc, char **argv) : argc(argc), argv(argv), showHelp(false) {
-    parse();
-}
+CommandLineParser::CommandLineParser(int argc, char **argv) : argc(argc), argv(argv) {}
 
 std::string CommandLineParser::getConfigFile() const {
     return configFile;
