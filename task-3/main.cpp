@@ -5,8 +5,8 @@
 int main(int argc, char *argv[]) {
     try {
         CommandLineParser parser(argc, argv);
-        const bool success = parser.parse();
-        if (!success) {
+        const bool help = parser.parse();
+        if (!help) {
             return 0;
         }
         SoundProcessor processor(parser.getConfigFile(), parser.getInputFiles(), parser.getOutputFile());
