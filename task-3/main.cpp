@@ -1,6 +1,10 @@
 #include <iostream>
 
-int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+#include "src/CommandLineParser.h"
+#include "src/SoundProcessor.h"
+
+int main(int argc, char *argv[]) {
+    const CommandLineParser parser(argc, argv);
+    SoundProcessor processor(parser.getConfigFile(), parser.getInputFiles(), parser.getOutputFile());
+    processor.process();
 }

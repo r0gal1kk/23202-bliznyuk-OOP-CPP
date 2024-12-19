@@ -1,18 +1,28 @@
-#ifndef LAB3_CONVERTERFACTORY_H
-#define LAB3_CONVERTERFACTORY_H
+#ifndef CONVERTERFACTORY_H
+#define CONVERTERFACTORY_H
 
 #include <string>
-#include <unordered_map>
 #include "Converter.h"
 
 class ConverterFactory {
 public:
-    ConverterFactory();
-    ~ConverterFactory();
-    Converter* createConverter(const std::string& line) const;
+    virtual ~ConverterFactory() = default;
+    virtual Converter* create(std::vector<std::string> &args) const = 0;
+};
 
-private:
-    std::unordered_map<std::string, Converter*> converters;
+class MuteFactory : public ConverterFactory {
+public:
+    Converter* create(std::vector<std::string> &args) const override;
+};
+
+class MixFactory : public ConverterFactory {
+public:
+    Converter* create(std::vector<std::string> &args) const override;
+};
+
+class FastFactory : public ConverterFactory {
+public:
+    Converter* create(std::vector<std::string> &args) const override;
 };
 
 #endif // LAB3_CONVERTERFACTORY_H

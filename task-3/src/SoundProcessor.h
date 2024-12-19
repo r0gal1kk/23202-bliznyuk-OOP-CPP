@@ -1,10 +1,10 @@
-#ifndef LAB3_SOUNDPROCESSOR_H
-#define LAB3_SOUNDPROCESSOR_H
+#ifndef SOUNDPROCESSOR_H
+#define SOUNDPROCESSOR_H
 
 #include <string>
 #include <vector>
 #include "ConfigParser.h"
-#include "WAVFile.h"
+#include "WAVFileReader.h"
 #include "ConverterFactory.h"
 
 class SoundProcessor {
@@ -20,9 +20,10 @@ private:
     std::string configFile;
     std::vector<std::string> inputFiles;
     std::string outputFile;
-
-    void validateInputs() const;
-    void processConversions(WAVFile& currentFile, const std::vector<Converter*>& converters);
+    std::vector<Converter*> converters;
+    std::vector<std::vector<int16_t>> inputSamples;
+    void createConverters();
+    void readInputFiles();
 };
 
-#endif // LAB3_SOUNDPROCESSOR_H
+#endif

@@ -3,18 +3,16 @@
 
 #include <string>
 #include <vector>
-#include "ConverterFactory.h"
 
 class ConfigParser {
 public:
-    ConfigParser(const std::string& filename, const ConverterFactory& factory);
+    explicit ConfigParser(const std::string& filename);
     ~ConfigParser();
-
-    std::vector<Converter*> parse() const;
-
+    std::vector<std::string> parseLine(const int& lineIndex) const;
+    size_t getLinesCount() const;
 private:
+    std::string filename;
     std::vector<std::string> lines;
-    const ConverterFactory& factory;
 };
 
 #endif // LAB3_CONFIGPARSER_H

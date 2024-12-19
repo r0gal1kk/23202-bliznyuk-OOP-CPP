@@ -1,20 +1,13 @@
 #include "ConverterFactory.h"
 
-#include "FastConverter.h"
-#include "MixConverter.h"
-#include "MuteConverter.h"
-#include "regex"
-
-ConverterFactory::ConverterFactory() {
-    converters["mute"] = new MuteConverter(0, 0);
-    converters["mix"] = new MixConverter(1, 0);
-    converters["fast"] = new FastConverter(0, 0, 0);
+Converter *MuteFactory::create(std::vector<std::string> &args) const {
+    return new MuteConverter(args);
 }
 
-ConverterFactory::~ConverterFactory() {
-    for (const auto& converter : converters) {
-        delete converter.second;
-    }
-    converters.clear();
+Converter *MixFactory::create(std::vector<std::string> &args) const {
+    return new MixConverter(args);
 }
 
+Converter *FastFactory::create(std::vector<std::string> &args) const {
+    return new FastConverter(args);
+}
