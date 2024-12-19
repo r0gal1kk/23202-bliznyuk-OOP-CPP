@@ -1,4 +1,3 @@
-#include <iostream>
 #include "CommandLineParser.h"
 #include "SoundProcessor.h"
 

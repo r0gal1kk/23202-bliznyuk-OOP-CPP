@@ -10,17 +10,18 @@ public:
     virtual ~Converter() = default;
     virtual std::vector<int16_t> convert(const std::vector<int16_t> &samples,
                                         const std::vector<std::vector<int16_t>> &extraInputs) const = 0;
-    //virtual std::string getDescription() const = 0;
+    virtual std::string getDescription() const = 0;
 protected:
     const int sampleRate = 44100;
 };
 
 class MuteConverter : public Converter {
 public:
+    MuteConverter() = default;
     explicit MuteConverter(const std::vector<std::string>& parameters);
     std::vector<int16_t> convert(const std::vector<int16_t> &samples,
                                 const std::vector<std::vector<int16_t>> &extraInputs) const override;
-    //std::string getDescription() const override;
+    std::string getDescription() const override;
 private:
     int start;
     int end;
@@ -28,10 +29,11 @@ private:
 
 class MixConverter : public Converter {
 public:
+    MixConverter() = default;
     explicit MixConverter(const std::vector<std::string>& parameters);
     std::vector<int16_t> convert(const std::vector<int16_t> &samples,
                                 const std::vector<std::vector<int16_t>> &extraInputs) const override;
-    //std::string getDescription() const override;
+    std::string getDescription() const override;
 private:
     int fileNumber;
     int start;
@@ -39,10 +41,11 @@ private:
 
 class FastConverter : public Converter {
 public:
+    FastConverter() = default;
     explicit FastConverter(const std::vector<std::string>& parameters);
     std::vector<int16_t> convert(const std::vector<int16_t> &samples,
                                 const std::vector<std::vector<int16_t>> &extraInputs) const override;
-    //std::string getDescription() const override;
+    std::string getDescription() const override;
 private:
     int start;
     int end;

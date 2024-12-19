@@ -2,11 +2,13 @@
 #include <sstream>
 #include <fstream>
 
+#include "Exceptions.h"
+
 ConfigParser::ConfigParser(const std::string &filename) {
     this->filename = filename;
     std::ifstream file(filename);
     if (!file.is_open()) {
-        throw std::runtime_error("ConfigParser: Could not open config file");
+        throw FileIOException("ConfigParser: Could not open config file");
     }
     std::string line;
     while (std::getline(file, line)) {

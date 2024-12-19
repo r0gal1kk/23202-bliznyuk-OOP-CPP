@@ -23,4 +23,4 @@ private:
     bool showHelp;
 };
 
-#endif // LAB3_COMMANDLINEPARSER_H
+#endif

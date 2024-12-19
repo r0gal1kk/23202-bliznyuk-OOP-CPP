@@ -1,32 +1,33 @@
 #include "Converter.h"
 #include <regex>
+#include "Exceptions.h"
 
 MuteConverter::MuteConverter(const std::vector<std::string>& parameters) {
     if (parameters.size() != 3) {
-        throw std::invalid_argument("Mute Converter requires exactly 3 arguments: mute <start> <end>");
+        throw InvalidArgumentsException("Mute Converter requires exactly 3 arguments: mute <start> <end>");
     }
     const std::regex numberRegex(R"(\d+)");
     if (!std::regex_match(parameters[1], numberRegex) || !std::regex_match(parameters[2], numberRegex)) {
-        throw std::invalid_argument("Mute Converter: start and end must be positive integers");
+        throw InvalidArgumentsException("Mute Converter: start and end must be positive integers");
     }
     start = std::stoi(parameters[1]);
     end = std::stoi(parameters[2]);
     if (start >= end) {
-        throw std::invalid_argument("Mute Converter: start time must be less than end time");
+        throw InvalidArgumentsException("Mute Converter: start time must be less than end time");
     }
 }
 
 MixConverter::MixConverter(const std::vector<std::string>& parameters) {
     if (parameters.size() != 3) {
-        throw std::invalid_argument("Mix Converter requires exactly 3 arguments: mix <fileNumber> <start>");
+        throw InvalidArgumentsException("Mix Converter requires exactly 3 arguments: mix <fileNumber> <start>");
     }
     const std::regex fileRegex(R"(\$\d+)");
     const std::regex numberRegex(R"(\d+)");
     if (!std::regex_match(parameters[1], fileRegex)) {
-        throw std::invalid_argument("Mix Converter: fileNumber must be in the format $<number>");
+        throw InvalidArgumentsException("Mix Converter: fileNumber must be in the format $<number>");
     }
     if (!std::regex_match(parameters[2], numberRegex)) {
-        throw std::invalid_argument("Mix Converter: start must be a positive integer");
+        throw InvalidArgumentsException("Mix Converter: start must be a positive integer");
     }
     fileNumber = std::stoi(parameters[1].substr(1));
     start = std::stoi(parameters[2]);
@@ -34,19 +35,19 @@ MixConverter::MixConverter(const std::vector<std::string>& parameters) {
 
 FastConverter::FastConverter(const std::vector<std::string>& parameters) {
     if (parameters.size() != 4) {
-        throw std::invalid_argument("Fast Converter requires exactly 4 arguments: fast <start> <end> <coefficient>");
+        throw InvalidArgumentsException("Fast Converter requires exactly 4 arguments: fast <start> <end> <coefficient>");
     }
     const std::regex numberRegex(R"(\d+)");
     if (!std::regex_match(parameters[1], numberRegex) ||
         !std::regex_match(parameters[2], numberRegex) ||
         !std::regex_match(parameters[3], numberRegex)) {
-        throw std::invalid_argument("Fast Converter: start, end, and coefficient must be positive integers");
+        throw InvalidArgumentsException("Fast Converter: start, end, and coefficient must be positive integers");
     }
     start = std::stoi(parameters[1]);
     end = std::stoi(parameters[2]);
     coefficient = std::stoi(parameters[3]);
     if (start >= end) {
-        throw std::invalid_argument("Fast Converter: Invalid time range");
+        throw InvalidArgumentsException("Fast Converter: Invalid time range");
     }
 }
 
@@ -89,4 +90,19 @@ std::vector<int16_t> FastConverter::convert(const std::vector<int16_t> &samples,
     // После фрагмента
     result.insert(result.end(), samples.begin() + endAcceleration, samples.end());
     return result;
+}
+
+std::string MuteConverter::getDescription() const {
+    return "Mutes audio fragment of input1.wav\n"
+           "Usage: mute <start second> <end second>\n\n";
+}
+
+std::string MixConverter::getDescription() const {
+    return "Mixes audio fragment of input1.wav with other input.wav\n"
+           "Usage: mix $<input file number> <start second>\n\n";
+}
+
+std::string FastConverter::getDescription() const {
+    return "Accelerates audio fragment of input1.wav by integer multiplier\n"
+           "Usage: fast <start> <end> <acceleration coefficient>\n\n";
 }

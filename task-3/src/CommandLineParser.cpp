@@ -1,7 +1,8 @@
 #include "CommandLineParser.h"
 #include <iostream>
-#include <stdexcept>
 #include <regex>
+#include "Converter.h"
+#include "Exceptions.h"
 
 void CommandLineParser::printHelp() const {
     std::cout << "Usage:\n"
@@ -9,6 +10,15 @@ void CommandLineParser::printHelp() const {
               << "Parameters:\n"
               << "-h : show this help\n"
               << "-c config.txt output.wav input1.wav [input2.wav ...] : run processing\n\n";
+    const MuteConverter* mute = new MuteConverter;
+    const MixConverter* mix = new MixConverter;
+    const FastConverter* fast = new FastConverter;
+    std::cout << mute->getDescription() << std::endl;
+    std::cout << mix->getDescription() << std::endl;
+    std::cout << fast->getDescription() << std::endl;
+    delete mute;
+    delete mix;
+    delete fast;
 }
 
 bool CommandLineParser::checkFormat(const std::string &arg, const std::string &format) {
@@ -22,7 +32,7 @@ bool CommandLineParser::checkFormat(const std::string &arg, const std::string &f
 
 void CommandLineParser::parse() {
     if (argc < 2) {
-        throw std::invalid_argument("Wrong number of arguments");
+        throw InvalidArgumentsException("Wrong number of arguments");
     }
     std::string arg = argv[1];
     if (arg == "-h") {
@@ -34,14 +44,14 @@ void CommandLineParser::parse() {
             configFile = arg;
         }
         else {
-            throw std::invalid_argument("Second argument is not a valid .txt file");
+            throw InvalidArgumentsException("Second argument is not a valid .txt file");
         }
         arg = argv[3];
         if (checkFormat(arg, ".wav")) {
             outputFile = arg;
         }
         else {
-            throw std::invalid_argument("Third argument is not a valid .wav file");
+            throw InvalidArgumentsException("Third argument is not a valid .wav file");
         }
         for (int i = 4; i < argc; i++) {
             arg = argv[i];
@@ -49,7 +59,7 @@ void CommandLineParser::parse() {
                 inputFiles.push_back(arg);
             }
             else {
-                throw std::invalid_argument("Input argument is not a valid .wav file");
+                throw InvalidArgumentsException("Input argument is not a valid .wav file");
             }
         }
     }
