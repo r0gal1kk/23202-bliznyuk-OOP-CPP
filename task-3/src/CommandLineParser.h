@@ -1,5 +1,5 @@
-#ifndef LAB3_COMMANDLINEPARSER_H
-#define LAB3_COMMANDLINEPARSER_H
+#ifndef COMMANDLINEPARSER_H
+#define COMMANDLINEPARSER_H
 
 #include <string>
 #include <vector>

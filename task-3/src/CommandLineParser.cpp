@@ -14,7 +14,7 @@ void CommandLineParser::printHelp() const {
 bool CommandLineParser::checkFormat(const std::string &arg, const std::string &format) {
     const std::regex wavRegex(R"((.*)\.wav)", std::regex_constants::icase);
     const std::regex txtRegex(R"((.*)\.txt)", std::regex_constants::icase);
-    if (format == "txt") {
+    if (format == ".txt") {
         return std::regex_match(arg, txtRegex);
     }
     return std::regex_match(arg, wavRegex);

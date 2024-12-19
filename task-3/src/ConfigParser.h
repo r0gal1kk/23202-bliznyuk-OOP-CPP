@@ -1,5 +1,5 @@
-#ifndef LAB3_CONFIGPARSER_H
-#define LAB3_CONFIGPARSER_H
+#ifndef CONFIGPARSER_H
+#define CONFIGPARSER_H
 
 #include <string>
 #include <vector>
@@ -15,4 +15,4 @@ private:
     std::vector<std::string> lines;
 };
 
-#endif // LAB3_CONFIGPARSER_H
+#endif

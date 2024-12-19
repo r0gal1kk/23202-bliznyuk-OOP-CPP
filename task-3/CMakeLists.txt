@@ -3,9 +3,10 @@ project(task_3)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(${CMAKE_PROJECT_NAME}_run main.cpp)
+add_executable(task_3_run main.cpp)
 
 include_directories(src)
 add_subdirectory(src)
+
 
 target_link_libraries(${CMAKE_PROJECT_NAME}_run ${CMAKE_PROJECT_NAME}_lib)

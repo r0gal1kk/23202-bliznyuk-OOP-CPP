@@ -37,7 +37,7 @@ void SoundProcessor::createConverters() {
 }
 
 void SoundProcessor::readInputFiles() {
-    for (int i = 1; i < inputFiles.size(); i++) {
+    for (int i = 0; i < inputFiles.size(); i++) {
         WAVFileReader reader(inputFiles[i]);
         reader.read();
         inputSamples[i] = reader.getSamples();
@@ -45,7 +45,8 @@ void SoundProcessor::readInputFiles() {
 }
 
 void SoundProcessor::process() {
-    const WAVFileReader reader(inputFiles[0]);
+    WAVFileReader reader(inputFiles[0]);
+    reader.read();
     std::vector<int16_t> resultSamples = reader.getSamples();
     readInputFiles();
     createConverters();

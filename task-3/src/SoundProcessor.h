@@ -13,7 +13,7 @@ public:
                    const std::vector<std::string>& inputFiles,
                    const std::string& outputFile);
 
-    ~SoundProcessor();
+    ~SoundProcessor() = default;
     void process();
 
 private:

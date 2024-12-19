@@ -1,5 +1,6 @@
 #include "WAVFileReader.h"
 #include <fstream>
+#include <cstring>
 
 WAVFileReader::WAVFileReader(const std::string &filename) {
     this->filename = filename;
@@ -18,63 +19,59 @@ const std::vector<int16_t>& WAVFileReader::getSamples() const {
 void WAVFileReader::read() {
     std::ifstream file(filename, std::ios::binary);
     if (!file.is_open()) {
-        throw std::runtime_error("Could not open WAV file: " + filename);
+     //   throw FileNotFoundException("Cannot open WAV file: " + filename);
     }
-    // Чтение заголовка WAV
-    file.read(reinterpret_cast<char*>(&header), sizeof(WAVHeader));
-    if (!file) {
-        throw std::runtime_error("Failed to read WAV header");
+    file.read(reinterpret_cast<char *>(&header.chunkID), 4);
+    file.read(reinterpret_cast<char *>(&header.chunkSize), 4);
+    file.read(reinterpret_cast<char *>(&header.format), 4);
+    if (std::strncmp(header.chunkID, "RIFF", 4) != 0 ||
+        std::strncmp(header.format, "WAVE", 4) != 0) {
+     //   throw InvalidFormatException("Invalid WAV file format: " + filename);
     }
-
-    // Проверка идентификаторов
-    if (std::string(header.chunkID, 4) != "RIFF" || std::string(header.format, 4) != "WAVE") {
-        throw std::runtime_error("Invalid WAV file format");
+    file.read(reinterpret_cast<char *>(&header.subchunk1ID), 4);
+    file.read(reinterpret_cast<char *>(&header.subchunk1Size), 4);
+    file.read(reinterpret_cast<char *>(&header.audioFormat), 2);
+    if(header.audioFormat != 1) {
+    //    throw InvalidFormatException("Must be no compress: " + filename);
     }
-    if (std::string(header.subchunk1ID, 4) != "fmt ") {
-        throw std::runtime_error("Invalid WAV subchunk1 ID");
-    }
-    if (header.audioFormat != 1) { // 1 означает PCM
-        throw std::runtime_error("Unsupported audio format (only PCM is supported)");
-    }
-
-    // Проверка параметров
+    file.read(reinterpret_cast<char *>(&header.numChannels), 2);
     if (header.numChannels != 1) {
-        throw std::runtime_error("Unsupported number of channels (only mono is supported)");
+    //    throw InvalidFormatException("Must be mono: " + filename);
     }
+    file.read(reinterpret_cast<char *>(&header.sampleRate), 4);
     if (header.sampleRate != 44100) {
-        throw std::runtime_error("Unsupported sample rate (only 44100 Hz is supported)");
+    //    throw InvalidFormatException("Must be 44100 hz: " + filename);
     }
-    if (header.bitsPerSample != 16) {
-        throw std::runtime_error("Unsupported bit depth (only 16 bits per sample is supported)");
+    file.read(reinterpret_cast<char *>(&header.byteRate), 4);
+    file.read(reinterpret_cast<char *>(&header.blockAlign), 2);
+    file.read(reinterpret_cast<char *>(&header.bitsPerSample), 2);
+    if(header.bitsPerSample != 16) {
+    //    throw InvalidFormatException("Must be 16 bits per sample: " + filename);
     }
-
-    // Проверка subchunk2ID
-    if (std::string(header.subchunk2ID, 4) != "data") {
-        throw std::runtime_error("Invalid WAV subchunk2 ID");
+    if (std::strncmp(header.subchunk1ID, "fmt ", 4) != 0 || header.audioFormat
+        != 1) {
+    //    throw InvalidFormatException("Unsupported WAV format: " + filename);
     }
-
-    // Проверка размера данных
-    uint32_t dataSize = header.subchunk2Size;
-    if (dataSize % sizeof(int16_t) != 0) {
-        throw std::runtime_error("Data size is not aligned to 16-bit samples");
+    uint32_t subchunkSize;
+    while (true) {
+        char subchunkID[4];
+        file.read(subchunkID, 4);
+        file.read(reinterpret_cast<char *>(&subchunkSize), 4);
+        if (std::strncmp(subchunkID, "data", 4) == 0) {
+            header.subchunk2ID[0] = subchunkID[0];
+            header.subchunk2ID[1] = subchunkID[1];
+            header.subchunk2ID[2] = subchunkID[2];
+            header.subchunk2ID[3] = subchunkID[3];
+            header.subchunk2Size = subchunkSize;
+            break;
+        }
+        file.seekg(subchunkSize, std::ios::cur);
     }
-
-    // Проверка корректности размера файла
-    file.seekg(0, std::ios::end);
-    const std::streampos fileSize = file.tellg();
-    if (fileSize < sizeof(WAVHeader) + dataSize) {
-        throw std::runtime_error("Invalid WAV file: data size mismatch");
-    }
-
-    // Переход к началу данных
-    file.seekg(sizeof(WAVHeader), std::ios::beg);
-
-    // Чтение данных
-    const size_t numSamples = dataSize / sizeof(int16_t);
+    const int numSamples = header.subchunk2Size / (header.bitsPerSample / 8);
     samples.resize(numSamples);
-    file.read(reinterpret_cast<char*>(samples.data()), dataSize);
+    file.read(reinterpret_cast<char *>(samples.data()), header.subchunk2Size);
     if (!file) {
-        throw std::runtime_error("Failed to read WAV samples");
+    //    throw FileNotFoundException(
+    //            "Failed to read WAV data from file: " + filename);
     }
-    file.close();
 }
